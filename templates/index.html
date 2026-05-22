@@ -1,0 +1,796 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<title>🌾 小麦籽粒检测 - Grain Detector</title>
+<style>
+*,::before,::after{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:#0f1117;color:#e2e8f0;min-height:100vh;line-height:1.5}
+
+/* === Tailwind CSS replacement (no CDN) === */
+/* Layout */
+.fixed{position:fixed}.absolute{position:absolute}.relative{position:relative}
+.inset-0{top:0;right:0;bottom:0;left:0}
+.top-0{top:0}.left-0{left:0}.right-0{right:0}.left-1\/2{left:50%}.bottom-24{bottom:6rem}
+.z-50{z-index:50}.z-400{z-index:400}.z-500{z-index:500}
+.flex{display:flex}.grid{display:grid}.hidden{display:none}.block{display:block}.inline-block{display:inline-block}
+.flex-col{flex-direction:column}.flex-wrap{flex-wrap:wrap}
+.items-center{align-items:center}.items-end{align-items:flex-end}.justify-center{justify-content:center}.justify-between{justify-content:space-between}
+.gap-1{gap:0.25rem}.gap-2{gap:0.5rem}.gap-3{gap:0.75rem}.gap-4{gap:1rem}
+.space-y-4>*+*{margin-top:1rem}.space-y-1\.5>*+*{margin-top:0.375rem}
+.grid-cols-3{grid-template-columns:repeat(3,1fr)}
+.flex-1{flex:1}.flex-shrink-0{flex-shrink:0}
+/* Sizing */
+.w-full{width:100%}.w-10{width:2.5rem}.h-10{height:2.5rem}.h-12{height:3rem}.h-20{height:5rem}
+.max-w-5xl{max-width:64rem}.min-w-\[160px\]{min-width:160px}
+/* Spacing */
+.p-3{padding:0.75rem}.p-4{padding:1rem}.px-3{padding-left:0.75rem;padding-right:0.75rem}
+.px-4{padding-left:1rem;padding-right:1rem}.px-6{padding-left:1.5rem;padding-right:1.5rem}
+.px-2\.5{padding-left:0.625rem;padding-right:0.625rem}
+.py-1\.5{padding-top:0.375rem;padding-bottom:0.375rem}.py-2\.5{padding-top:0.625rem;padding-bottom:0.625rem}
+.py-3{padding-top:0.75rem;padding-bottom:0.75rem}.py-3\.5{padding-top:0.875rem;padding-bottom:0.875rem}
+.py-4{padding-top:1rem;padding-bottom:1rem}.py-8{padding-top:2rem;padding-bottom:2rem}
+.py-12{padding-top:3rem;padding-bottom:3rem}
+.pt-3{padding-top:0.75rem}.pb-4{padding-bottom:1rem}.pr-2{padding-right:0.5rem}.pl-2{padding-left:0.5rem}
+.mx-auto{margin-left:auto;margin-right:auto}.ml-auto{margin-left:auto}.mb-3{margin-bottom:0.75rem}
+.mt-1{margin-top:0.25rem}.mt-3{margin-top:0.75rem}
+.mr-1{margin-right:0.25rem}.ml-1{margin-left:0.25rem}
+/* Typography */
+.text-xs{font-size:0.75rem}.text-sm{font-size:0.875rem}.text-base{font-size:1rem}
+.text-lg{font-size:1.125rem}.text-xl{font-size:1.25rem}.text-2xl{font-size:1.5rem}.text-3xl{font-size:1.875rem}.text-5xl{font-size:3rem}
+.font-bold{font-weight:700}.font-semibold{font-weight:600}.font-medium{font-weight:500}
+.text-center{text-align:center}.text-left{text-align:left}.text-right{text-align:right}
+.leading-none{line-height:1}.break-all{word-break:break-all}
+/* Colors */
+.text-white{color:#fff}.text-black{color:#000}
+.text-accent{color:#4ade80}.text-dim{color:#8892a6}
+.text-danger{color:#f87171}.text-orange-400{color:#fb923c}
+.bg-surf-card{background:#1a1d27}.bg-surf{background:#0f1117}.bg-\[\#0f1117\]{background:#0f1117}
+.bg-accent{background:#4ade80}.bg-danger{background:#f87171}.bg-danger\/90{background:rgba(248,113,113,.9)}
+.bg-orange-500\/20{background:rgba(249,115,22,.2)}
+.bg-accent\/5{background:rgba(74,222,128,.05)}.bg-accent\/60{background:rgba(74,222,128,.6)}.bg-warn{background:#facc15}
+.bg-gradient-to-t{background-image:linear-gradient(to top,var(--tw-gradient-stops))}
+.from-black\/60{--tw-gradient-from:rgba(0,0,0,.6);--tw-gradient-stops:var(--tw-gradient-from),var(--tw-gradient-to,transparent)}
+.to-transparent{--tw-gradient-to:transparent}
+/* Borders */
+.border{border-width:1px}.border-2{border-width:2px}.border-b{border-bottom-width:1px}.border-dashed{border-style:dashed}
+.border-surf-border{border-color:#2a2d3a}.border-accent{border-color:#4ade80}
+.border-orange-500\/30{border-color:rgba(249,115,22,.3)}.border-danger\/30{border-color:rgba(248,113,113,.3)}
+.border-danger{border-color:#f87171}
+.border-t-accent{border-top-color:#4ade80}.border-t-surf-border{border-top-color:#2a2d3a}
+/* Rounded */
+.rounded-lg{border-radius:0.5rem}.rounded-xl{border-radius:0.75rem}.rounded-2xl{border-radius:1rem}
+.rounded-full{border-radius:9999px}.rounded-t{border-radius:0.25rem 0.25rem 0 0}
+/* Effects */
+.shadow-2xl{box-shadow:0 25px 50px -12px rgba(0,0,0,.25)}
+.shadow-\[0_0_6px_\#4ade80\]{box-shadow:0 0 6px #4ade80}
+.shadow-\[0_0_6px_\#facc15\]{box-shadow:0 0 6px #facc15}
+.shadow-\[0_0_6px_\#f87171\]{box-shadow:0 0 6px #f87171}
+.opacity-80{opacity:.8}.opacity-0{opacity:0}.opacity-40{opacity:.4}
+/* Transitions */
+.transition-all{transition-property:all;transition-timing-function:cubic-bezier(.4,0,.2,1);transition-duration:150ms}
+.transition-opacity{transition-property:opacity;transition-timing-function:cubic-bezier(.4,0,.2,1);transition-duration:150ms}
+.transition-colors{transition-property:color,background-color,border-color;transition-timing-function:cubic-bezier(.4,0,.2,1);transition-duration:150ms}
+.duration-200{transition-duration:200ms}.duration-300{transition-duration:300ms}
+.transition-transform{transition-property:transform;transition-timing-function:cubic-bezier(.4,0,.2,1)}
+/* Hover */
+.hover\:bg-accent\/5:hover{background:rgba(74,222,128,.05)}
+.hover\:bg-orange-500\/30:hover{background:rgba(249,115,22,.3)}
+.hover\:bg-danger\/30:hover{background:rgba(248,113,113,.3)}
+.hover\:opacity-90:hover{opacity:.9}
+.hover\:text-white:hover{color:#fff}
+/* Disabled */
+.disabled\:opacity-40:disabled{opacity:.4}
+.disabled\:cursor-not-allowed:disabled{cursor:not-allowed}
+/* Active */
+.active\:scale-\[0\.99\]:active{transform:scale(.99)}
+/* Group */
+.group:hover .group-hover\:opacity-100{opacity:1}
+/* Responsive */
+@media(min-width:768px){
+.md\:px-6{padding-left:1.5rem;padding-right:1.5rem}
+.md\:py-6{padding-top:1.5rem;padding-bottom:1.5rem}
+.md\:py-16{padding-top:4rem;padding-bottom:4rem}
+.md\:text-3xl{font-size:1.875rem}
+.md\:grid-cols-2{grid-template-columns:repeat(2,1fr)}
+}
+/* Cursor */
+.cursor-pointer{cursor:pointer}.cursor-zoom-in{cursor:zoom-in}.cursor-zoom-out{cursor:zoom-out}
+/* Misc */
+.overflow-hidden{overflow:hidden}.overflow-y-auto{overflow-y:auto}
+.-translate-x-1\/2{transform:translateX(-50%)}
+.animate-spin{animation:spin 1s linear infinite}
+@keyframes spin{to{transform:rotate(360deg)}}
+.focus\:outline-none:focus{outline:2px solid transparent;outline-offset:2px}
+.focus\:border-accent\/50:focus{border-color:rgba(74,222,128,.5)}
+.select-none{user-select:none}
+/* === Original custom styles === */
+@keyframes borderPulse{0%,100%{border-color:rgba(74,222,128,.3)}50%{border-color:rgba(74,222,128,.7)}}
+.upload-pulse{border-color:rgba(74,222,128,.3);animation:borderPulse 3s ease-in-out infinite}
+.upload-pulse:hover{animation:none;border-color:#4ade80;background:rgba(74,222,128,.05)}
+@keyframes shimmer{0%{background-position:-200% 0}100%{background-position:200% 0}}
+.skeleton{background:linear-gradient(90deg,#1a1d27 25%,#2a2d3a 50%,#1a1d27 75%);background-size:200% 100%;animation:shimmer 1.5s infinite;border-radius:8px}
+input[type=range]{-webkit-appearance:none;appearance:none;width:100%;height:6px;background:#2a2d3a;border-radius:3px;outline:none;cursor:pointer}
+input[type=range]::-webkit-slider-thumb{-webkit-appearance:none;appearance:none;width:20px;height:20px;border-radius:50%;background:#4ade80;cursor:pointer;box-shadow:0 0 8px rgba(74,222,128,.4);transition:transform .15s}
+input[type=range]::-webkit-slider-thumb:hover{transform:scale(1.15)}
+input[type=range]::-moz-range-thumb{width:20px;height:20px;border-radius:50%;background:#4ade80;cursor:pointer;border:none;box-shadow:0 0 8px rgba(74,222,128,.4)}
+@keyframes slideUp{from{transform:translate(-50%,20px);opacity:0}to{transform:translate(-50%,0);opacity:1}}
+@keyframes slideDown{from{transform:translate(-50%,0);opacity:1}to{transform:translate(-50%,20px);opacity:0}}
+.toast-show{animation:slideUp .3s ease-out}
+.toast-hide{animation:slideDown .3s ease-out;opacity:0}
+@keyframes pulseWarning{0%,100%{opacity:1}50%{opacity:.85}}
+.offline-pulse{animation:pulseWarning 2s ease-in-out infinite}
+.zoom-overlay{position:fixed;inset:0;background:rgba(0,0,0,.92);z-index:500;display:none;overflow:hidden;user-select:none;-webkit-user-select:none;touch-action:none}
+.zoom-overlay.show{display:block}
+.zoom-overlay .zoom-close{position:absolute;top:16px;right:16px;z-index:510;width:40px;height:40px;border-radius:50%;background:rgba(255,255,255,.15);border:none;color:#fff;font-size:20px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.zoom-overlay .zoom-ctrl{position:absolute;bottom:20px;left:50%;transform:translateX(-50%);z-index:510;display:flex;gap:6px;background:rgba(0,0,0,.6);border-radius:8px;padding:4px}
+.zoom-overlay .zoom-ctrl button{width:36px;height:36px;border-radius:6px;background:rgba(255,255,255,.12);border:none;color:#fff;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.zoom-overlay .zoom-ctrl button:hover{background:rgba(255,255,255,.25)}
+.zoom-overlay .zoom-ctrl .zoom-level{min-width:52px;text-align:center;font-size:12px;color:#aaa;line-height:36px}
+.zoom-overlay .zoom-img-wrap{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;cursor:grab}
+.zoom-overlay .zoom-img-wrap.dragging{cursor:grabbing}
+.zoom-overlay .zoom-img-wrap img{max-width:95vw;max-height:95vh;object-fit:contain;border-radius:8px;pointer-events:none;will-change:transform}
+.progress-bar{width:100%;height:8px;background:#2a2d3a;border-radius:4px;overflow:hidden}
+.progress-fill{height:100%;background:linear-gradient(90deg,#4ade80,#22d3ee);border-radius:4px;transition:width .3s ease;width:0%}
+.confi-dot{display:inline-block;width:8px;height:8px;border-radius:50%;margin:0 1px}
+.confi-high{background:#4ade80}.confi-mid{background:#facc15}.confi-low{background:#f87171}
+details.adv-settings{background:#1a1d27;border:1px solid #2a2d3a;border-radius:0.75rem;overflow:hidden}
+details.adv-settings>summary{padding:0.75rem 1rem;cursor:pointer;font-size:0.875rem;color:#8892a6;user-select:none;list-style:none;display:flex;align-items:center;gap:0.5rem}
+details.adv-settings>summary::-webkit-details-marker{display:none}
+details.adv-settings>summary::before{content:"\25B8";font-size:12px;transition:transform .2s}
+details.adv-settings[open]>summary::before{transform:rotate(90deg)}
+details.adv-settings>summary:hover{color:#e2e8f0}
+details.adv-settings .slider-group{padding:0 1rem 0.875rem}
+/* border-3 for loading spinner */
+.border-3{border-width:3px}
+.warm-list{font-size:11px;color:#8892a6;margin-top:4px;line-height:1.5}
+.warm-list .main{color:#4ade80}
+.warm-list .secondary{color:#8892a6}
+</style>
+</head>
+<body>
+<!-- Offline Overlay -->
+<div id="offlineOverlay" class="offline-pulse fixed top-0 left-0 right-0 z-50 bg-danger/90 text-white text-center py-3 font-semibold text-sm hidden">
+  ⚠️ 服务器连接已断开，正在尝试重连...
+</div>
+
+<!-- Header -->
+<header class="border-b border-surf-border px-4 md:px-6 py-3 flex items-center gap-3">
+  <span class="text-2xl">🌾</span>
+  <h1 class="text-lg font-semibold">小麦籽粒检测</h1>
+  <span class="bg-accent text-black text-xs font-bold px-2.5 py-0.5 rounded-full">YOLOv8</span>
+  <div class="ml-auto flex items-center gap-2 bg-surf-card border border-surf-border rounded-full px-3 py-1.5 text-xs">
+    <span id="connDot" class="w-2.5 h-2.5 rounded-full bg-warn shadow-[0_0_6px_#facc15]"></span>
+    <span id="connText" class="text-dim">检测中...</span>
+  </div>
+</header>
+
+<!-- API Key Bar -->
+<div id="keyBar" class="border-b border-surf-border bg-surf-card px-4 md:px-6 py-2.5 flex flex-wrap gap-2 items-center">
+  <span class="text-dim text-xs font-medium">🔑 API Key</span>
+  <input id="keyInput" type="password" placeholder="输入 API Key" class="flex-1 min-w-[160px] bg-[#0f1117] border border-surf-border text-white px-3 py-1.5 rounded-lg text-xs focus:outline-none focus:border-accent/50">
+  <button onclick="saveKey()" class="bg-accent text-black text-xs font-semibold px-4 py-1.5 rounded-lg hover:opacity-90 transition-opacity">连接</button>
+  <span id="keyStatus" class="text-xs"></span>
+</div>
+
+<!-- Main Content -->
+<main class="max-w-5xl mx-auto w-full px-4 md:px-6 py-4 md:py-6 space-y-4">
+
+  <!-- Upload Zone -->
+  <div id="dropZone" class="upload-pulse border-2 border-dashed rounded-2xl py-12 md:py-16 px-6 text-center cursor-pointer transition-all duration-300 hover:bg-accent/5" onclick="document.getElementById('fileInput').click()">
+    <div class="text-5xl mb-3 opacity-80">📷</div>
+    <p class="text-lg font-medium text-white/90">点击上传 或 拖拽图片到此处</p>
+    <p class="text-sm text-dim mt-1" id="uploadHint">支持 JPG / PNG / BMP，最大 10MB</p>
+    <p class="text-xs text-accent/80 mt-3 flex items-center justify-center gap-1">
+      <span>💡</span> 也可 <kbd class="bg-surf-card px-1.5 py-0.5 rounded text-xs border border-surf-border">Ctrl+V</kbd> 粘贴图片
+    </p>
+  </div>
+  <input type="file" id="fileInput" accept="image/*" class="hidden">
+
+  <!-- Detect Button -->
+  <button id="detectBtn" disabled onclick="detect()" class="w-full bg-accent text-black font-bold py-3.5 rounded-xl text-base hover:opacity-90 disabled:opacity-40 disabled:cursor-not-allowed transition-all duration-200 active:scale-[0.99]">
+    🚀 开始检测
+  </button>
+
+  <!-- Progress Bars -->
+  <div id="uploadProgress" class="hidden space-y-1.5">
+    <div class="flex justify-between text-xs text-dim"><span>⬆ 上传中</span><span id="uploadText">0%</span></div>
+    <div class="progress-bar"><div class="progress-fill" id="uploadFill"></div></div>
+  </div>
+  <div id="downloadProgress" class="hidden space-y-1.5">
+    <div class="flex justify-between text-xs text-dim"><span>⬇ 下载中</span><span id="downloadText">0%</span></div>
+    <div class="progress-bar"><div class="progress-fill" id="downloadFill"></div></div>
+  </div>
+
+  <!-- Loading -->
+  <div id="loading" class="hidden space-y-4 py-8">
+    <div class="flex justify-center"><div class="w-10 h-10 border-3 border-surf-border border-t-accent rounded-full animate-spin"></div></div>
+    <p id="loadingText" class="text-center text-sm text-dim">处理中...</p>
+    <p id="loadingDetail" class="text-center text-xs text-dim/60"></p>
+    <!-- Skeleton -->
+    <div class="grid grid-cols-3 gap-3">
+      <div class="skeleton h-20"></div>
+      <div class="skeleton h-20"></div>
+      <div class="skeleton h-20"></div>
+    </div>
+    <div class="skeleton h-64 md:h-96"></div>
+  </div>
+
+  <!-- Results -->
+  <div id="resultPanel" class="hidden space-y-4">
+    <!-- Stats Cards -->
+    <div class="grid grid-cols-3 gap-3">
+      <div class="bg-surf-card border border-surf-border rounded-xl p-4 text-center">
+        <div class="text-3xl font-bold text-accent" id="countNum">0</div>
+        <div class="text-xs text-dim mt-1">🌾 籽粒数</div>
+      </div>
+      <div class="bg-surf-card border border-surf-border rounded-xl p-4 text-center">
+        <div class="text-3xl font-bold text-accent" id="timeNum">0</div>
+        <div class="text-xs text-dim mt-1">⚡ 耗时 (ms)</div>
+      </div>
+      <div class="bg-surf-card border border-surf-border rounded-xl p-4 text-center">
+        <div class="text-xl md:text-2xl font-bold text-accent" id="sizeNum" style="word-break:keep-all;overflow-wrap:break-word">0</div>
+        <div class="text-xs text-dim mt-1">📐 尺寸</div>
+      </div>
+    </div>
+
+    <!-- Result Image -->
+    <div class="bg-surf-card border border-surf-border rounded-xl overflow-hidden relative group">
+      <img id="resultImg" src="" class="w-full cursor-zoom-in" onclick="zoomOpen(this.src)" alt="检测结果">
+      <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-3 opacity-0 group-hover:opacity-100 transition-opacity">
+        <span class="text-xs text-white/80">点击查看大图</span>
+      </div>
+    </div>
+
+    <!-- Confidence Distribution -->
+    <div id="confDistribution" class="bg-surf-card border border-surf-border rounded-xl p-4 hidden">
+      <div class="text-xs text-dim mb-2">📊 置信度分布</div>
+      <div class="flex items-end gap-1 h-12" id="confBars"></div>
+      <div class="flex justify-between text-[10px] text-dim/60 mt-1">
+        <span>0.0</span><span>0.5</span><span>1.0</span>
+      </div>
+    </div>
+
+    <!-- Save Button (识别不准) -->
+    <button id="saveBtn" onclick="saveImage()" class="hidden w-full bg-orange-500/20 text-orange-400 border border-orange-500/30 py-2.5 rounded-xl text-sm font-semibold hover:bg-orange-500/30 transition-all">
+      ❌ 这次识别不准 — 保存原图
+    </button>
+  </div>
+
+  <!-- Retry Button -->
+  <button id="retryBtn" onclick="retryDetect()" class="hidden w-full bg-danger/20 text-danger border border-danger/30 py-2.5 rounded-xl text-sm font-semibold hover:bg-danger/30 transition-all">
+    🔄 重试检测
+  </button>
+
+  <!-- Advanced Settings -->
+  <details class="bg-surf-card border border-surf-border rounded-xl overflow-hidden">
+    <summary class="px-4 py-3 cursor-pointer text-sm text-dim hover:text-white transition-colors flex items-center gap-2">
+      <span class="text-xs transition-transform duration-200">▶</span> 高级设置
+    </summary>
+    <div class="px-4 pb-4 grid md:grid-cols-2 gap-4">
+      <div class="bg-[#0f1117] border border-surf-border rounded-xl p-4">
+        <div class="flex justify-between items-center mb-2">
+          <span class="text-xs text-dim">置信度阈值 (Confidence)</span>
+          <span class="text-sm font-bold text-accent" id="confValue">0.25</span>
+        </div>
+        <input type="range" id="confSlider" min="0.01" max="1.0" step="0.01" value="0.25"
+               oninput="document.getElementById('confValue').textContent=parseFloat(this.value).toFixed(2)">
+      </div>
+      <div class="bg-[#0f1117] border border-surf-border rounded-xl p-4">
+        <div class="flex justify-between items-center mb-2">
+          <span class="text-xs text-dim">IoU 阈值 (覆盖度)</span>
+          <span class="text-sm font-bold text-accent" id="iouValue">0.50</span>
+        </div>
+        <input type="range" id="iouSlider" min="0.01" max="1.0" step="0.01" value="0.50"
+               oninput="document.getElementById('iouValue').textContent=parseFloat(this.value).toFixed(2)">
+      </div>
+      <div class="bg-[#0f1117] border border-surf-border rounded-xl p-4 md:col-span-2">
+        <div class="flex justify-between items-center mb-2">
+          <span class="text-xs text-dim">模型文件</span>
+          <span class="text-xs text-accent" id="modelStatus">加载中...</span>
+        </div>
+        <select id="modelSelect" onchange="switchModel(this.value)"
+                class="w-full bg-surf-card border border-surf-border text-white px-3 py-2 rounded-lg text-sm focus:outline-none focus:border-accent/50 cursor-pointer">
+          <option value="">加载中...</option>
+        </select>
+        <div id="warmStatus" class="warm-list"></div>
+      </div>
+    </div>
+  </details>
+</main>
+
+<!-- Zoom Overlay -->
+<div id="zoomOverlay" class="zoom-overlay">
+  <button class="zoom-close" onclick="zoomClose()" title="关闭 (ESC)">&times;</button>
+  <div id="zoomWrap" class="zoom-img-wrap">
+    <img id="zoomImg" src="" alt="放大查看" draggable="false">
+  </div>
+  <div class="zoom-ctrl">
+    <button onclick="zoomOut()" title="缩小">−</button>
+    <span class="zoom-level" id="zoomLevel">100%</span>
+    <button onclick="zoomIn()" title="放大">+</button>
+    <button onclick="zoomFit()" title="适应窗口">⊡</button>
+    <button onclick="zoomMax()" title="最大缩放">⊞</button>
+  </div>
+</div>
+
+<!-- Toast -->
+<div id="toast" class="fixed bottom-24 left-1/2 -translate-x-1/2 bg-surf-card border border-surf-border text-white px-5 py-2.5 rounded-xl text-sm shadow-2xl z-[400] hidden"></div>
+
+<script>
+// ============================================================
+//  State
+// ============================================================
+var apiKey=localStorage.getItem('grain_api_key')||'';
+var selectedFile=null;
+var authDisabled=false;
+var serverOnline=false;
+var heartbeatTimer=null;
+var retryCount=0;
+var MAX_RETRIES=3;
+var lastResult=null;
+var lastOriginalFile=null;
+
+function $(id){return document.getElementById(id)}
+
+// ============================================================
+//  Image Compression
+// ============================================================
+function compressImage(file,maxWidth,quality){
+  maxWidth=maxWidth||1920;
+  quality=quality||0.85;
+  return new Promise(function(resolve){
+    if(file.size<500*1024){resolve(file);return}
+    var reader=new FileReader();
+    reader.onload=function(e){
+      var img=new Image();
+      img.onload=function(){
+        var canvas=document.createElement('canvas');
+        var w=img.width,h=img.height;
+        if(w>maxWidth){h=h*maxWidth/w;w=maxWidth}
+        canvas.width=w;canvas.height=h;
+        canvas.getContext('2d').drawImage(img,0,0,w,h);
+        canvas.toBlob(function(blob){
+          if(blob.size>=file.size){resolve(file)}
+          else{resolve(new File([blob],file.name,{type:'image/jpeg',lastModified:Date.now()}))}
+        },'image/jpeg',quality);
+      };
+      img.src=e.target.result;
+    };
+    reader.readAsDataURL(file);
+  });
+}
+
+// ============================================================
+//  Connection Status
+// ============================================================
+function setConnState(state,detail){
+  var dot=$('connDot'),text=$('connText'),overlay=$('offlineOverlay');
+  dot.className='w-2.5 h-2.5 rounded-full';
+  if(state==='online'){
+    dot.classList.add('bg-accent','shadow-[0_0_6px_#4ade80]');
+    text.textContent='已连接';
+    text.style.color='#4ade80';
+    overlay.classList.add('hidden');
+    overlay.classList.remove('flex');
+    serverOnline=true;
+  }else if(state==='offline'){
+    dot.classList.add('bg-danger','shadow-[0_0_6px_#f87171]');
+    text.textContent='未连接';
+    text.style.color='#f87171';
+    overlay.classList.remove('hidden');
+    overlay.classList.add('flex');
+    serverOnline=false;
+  }else{
+    dot.classList.add('bg-warn','shadow-[0_0_6px_#facc15]');
+    text.textContent=detail||'检测中...';
+    text.style.color='#facc15';
+  }
+}
+
+function pingServer(){
+  return new Promise(function(resolve){
+    var ctrl=new AbortController();
+    var tid=setTimeout(function(){ctrl.abort()},5000);
+    fetch('/api/ping',{signal:ctrl.signal}).then(function(r){
+      clearTimeout(tid);
+      if(r.ok){
+        return r.json().then(function(d){
+          if(d.auth===false)authDisabled=true;
+          setConnState('online');resolve(true);
+        });
+      }
+      setConnState('offline');resolve(false);
+    }).catch(function(){clearTimeout(tid);setConnState('offline');resolve(false)});
+  });
+}
+
+function startHeartbeat(){pingServer();heartbeatTimer=setInterval(pingServer,5000)}
+
+// ============================================================
+//  Toast
+// ============================================================
+function toast(msg,type){
+  var t=$('toast');t.textContent=msg;
+  t.className='fixed bottom-24 left-1/2 -translate-x-1/2 bg-surf-card border text-white px-5 py-2.5 rounded-xl text-sm shadow-2xl z-[400] toast-show';
+  if(type==='error'){t.style.borderColor='#f87171';t.style.color='#f87171'}
+  else if(type==='success'){t.style.borderColor='#4ade80';t.style.color='#4ade80'}
+  else{t.style.borderColor='#2a2d3a'}
+  t.classList.remove('hidden');
+  setTimeout(function(){t.classList.add('toast-hide');setTimeout(function(){t.classList.add('hidden');t.classList.remove('toast-show','toast-hide')},300)},2700);
+}
+
+// ============================================================
+//  API Key
+// ============================================================
+// 从后端读取配置
+var maxUploadMB = 10;
+fetch('/api/config').then(function(r){return r.json()}).then(function(c){
+  maxUploadMB = c.max_upload_mb || 10;
+  if(c.auth_enabled === false){authDisabled = true;}
+  $('uploadHint').textContent = '支持 JPG / PNG / BMP，最大 '+maxUploadMB+'MB';
+}).catch(function(){});
+fetch('/api/health').then(function(r){return r.json()}).then(function(d){
+  if(d.auth===false){authDisabled=true;$('keyBar').classList.add('hidden')}
+  else{$('keyBar').classList.remove('hidden')}
+}).catch(function(){});
+if(apiKey){
+  $('keyInput').value='***';
+  $('keyStatus').textContent='✅ 已保存';
+  $('keyStatus').style.color='#4ade80';
+}
+
+function saveKey(){
+  apiKey=$('keyInput').value.trim();
+  if(!apiKey){toast('请输入 API Key','error');return}
+  localStorage.setItem('grain_api_key',apiKey);
+  $('keyStatus').textContent='✅ Key 已保存';
+  $('keyStatus').style.color='#4ade80';
+  toast('API Key 已保存','success');
+}
+
+// ============================================================
+//  File Handling
+// ============================================================
+$('fileInput').addEventListener('change',function(e){if(e.target.files[0])handleFile(e.target.files[0])});
+
+var dz=$('dropZone');
+dz.addEventListener('dragover',function(e){e.preventDefault();dz.classList.add('!border-accent','!bg-accent/5');dz.classList.remove('upload-pulse')});
+dz.addEventListener('dragleave',function(){dz.classList.remove('!border-accent','!bg-accent/5');dz.classList.add('upload-pulse')});
+dz.addEventListener('drop',function(e){e.preventDefault();dz.classList.remove('!border-accent','!bg-accent/5');dz.classList.add('upload-pulse');if(e.dataTransfer.files[0])handleFile(e.dataTransfer.files[0])});
+
+function handleFile(f){
+  if(!f.type.startsWith('image/')){toast('请上传图片文件','error');return}
+  if(f.size>maxUploadMB*1024*1024){toast('文件过大，最大 '+maxUploadMB+'MB','error');return}
+  selectedFile=f;
+  lastOriginalFile=f;
+  $('detectBtn').disabled=false;
+  $('detectBtn').textContent='🚀 检测 '+f.name;
+  toast('已选择: '+f.name,'success');
+}
+
+// ============================================================
+//  Progress UI
+// ============================================================
+function showProgress(id,show){var el=$(id);if(show){el.classList.remove('hidden')}else{el.classList.add('hidden')}}
+function updateProgress(fillId,textId,pct,speed){$(fillId).style.width=pct+'%';var t=pct+'%';if(speed)t+=' ('+speed+')';$(textId).textContent=t}
+
+function formatSize(b){if(b<1024)return b+'B';if(b<1048576)return(b/1024).toFixed(1)+'KB';return(b/1048576).toFixed(1)+'MB'}
+function formatSpeed(bps){if(bps<1024)return bps.toFixed(0)+'B/s';if(bps<1048576)return(bps/1024).toFixed(1)+'KB/s';return(bps/1048576).toFixed(1)+'MB/s'}
+
+// ============================================================
+//  Confidence Distribution Visualization
+// ============================================================
+function showConfDistribution(detections){
+  var container=$('confDistribution');
+  var bars=$('confBars');
+  if(!detections||detections.length<2){container.classList.add('hidden');return}
+  container.classList.remove('hidden');
+  bars.innerHTML='';
+  var confs=detections.map(function(d){return d.confidence});
+  var bins=[0,0,0,0,0,0,0,0,0,0];
+  confs.forEach(function(c){var idx=Math.min(9,Math.floor(c*10));bins[idx]++});
+  var max=Math.max(1,Math.max.apply(null,bins));
+  bins.forEach(function(count){
+    var bar=document.createElement('div');
+    var pct=(count/max*100).toFixed(0);
+    bar.className='flex-1 bg-accent/60 rounded-t';
+    bar.style.height=pct+'%';
+    bar.title=count+'个';
+    bars.appendChild(bar);
+  });
+}
+
+// ============================================================
+//  Detect
+// ============================================================
+function detect(){
+  if(!selectedFile){toast('请先选择图片','error');return}
+  if(!authDisabled&&!apiKey){toast('请先输入 API Key','error');return}
+  if(!serverOnline){toast('服务器未连接，请稍后重试','error');return}
+
+  $('detectBtn').disabled=true;
+  $('retryBtn').classList.add('hidden');
+  $('saveBtn').classList.add('hidden');
+  $('resultPanel').classList.add('hidden');
+  $('loading').classList.remove('hidden');
+  $('loadingText').textContent='📦 正在压缩图片...';
+  $('loadingDetail').textContent=selectedFile.name+' ('+formatSize(selectedFile.size)+')';
+
+  compressImage(selectedFile).then(function(compressedFile){
+    $('loadingText').textContent='⬆ 正在上传...';
+    $('loadingDetail').textContent='压缩后: '+formatSize(compressedFile.size)+' (原始: '+formatSize(selectedFile.size)+')';
+    return uploadWithProgress(compressedFile);
+  }).then(function(result){
+    $('loadingText').textContent='✅ 检测完成';
+    $('loadingDetail').textContent='模型处理完成';
+    $('countNum').textContent=result.count;
+    $('timeNum').textContent=result.elapsed_ms;
+    $('sizeNum').textContent=result.image_size.width+'×'+result.image_size.height;
+    $('resultImg').src=result.result_image;
+    $('resultPanel').classList.remove('hidden');
+    showConfDistribution(result.detections);
+    $('saveBtn').classList.remove('hidden');
+    $('saveBtn').disabled=false;
+    $('saveBtn').textContent='❌ 这次识别不准 — 保存原图';
+    $('saveBtn').style.borderColor='';$('saveBtn').style.color='';
+    lastResult=result;
+    toast('检测完成: '+result.count+' 粒','success');
+    retryCount=0;
+  }).catch(function(e){
+    console.error('Detection failed:',e);
+    if(retryCount<MAX_RETRIES){
+      toast('检测失败，'+(MAX_RETRIES-retryCount)+' 次重试机会','error');
+      $('retryBtn').classList.remove('hidden');
+    }else{
+      toast('检测失败，已达最大重试次数','error');
+    }
+  }).finally(function(){
+    $('loading').classList.add('hidden');
+    $('detectBtn').disabled=false;
+    $('detectBtn').textContent='🚀 开始检测';
+    showProgress('uploadProgress',false);
+    showProgress('downloadProgress',false);
+  });
+}
+
+function retryDetect(){retryCount++;detect()}
+
+// ============================================================
+//  Save Image (识别不准)
+// ============================================================
+function saveImage(){
+  if(!lastOriginalFile){toast('没有可保存的图片','error');return}
+  if(!authDisabled&&!apiKey){toast('请先输入 API Key','error');return}
+  if(!serverOnline){toast('服务器未连接','error');return}
+
+  var btn=$('saveBtn');
+  btn.disabled=true;
+  btn.textContent='⏳ 正在保存...';
+
+  var fd=new FormData();fd.append('file',lastOriginalFile);
+  var xhr=new XMLHttpRequest();
+  xhr.open('POST','/api/save-image',true);
+  if(!authDisabled&&apiKey)xhr.setRequestHeader('Authorization','Bearer '+apiKey);
+  xhr.onload=function(){
+    if(xhr.status>=200&&xhr.status<300){
+      btn.textContent='✅ 已保存到优质照片';
+      btn.style.borderColor='#4ade80';btn.style.color='#4ade80';
+      toast('原图已保存','success');
+    }else{
+      btn.disabled=false;
+      btn.textContent='❌ 这次识别不准 — 保存原图';
+      toast('保存失败','error');
+    }
+  };
+  xhr.onerror=function(){
+    btn.disabled=false;
+    btn.textContent='❌ 这次识别不准 — 保存原图';
+    toast('网络错误','error');
+  };
+  xhr.timeout=30000;
+  xhr.send(fd);
+}
+
+// ============================================================
+//  Upload with XHR Progress
+// ============================================================
+function uploadWithProgress(file){
+  return new Promise(function(resolve,reject){
+    var xhr=new XMLHttpRequest();
+    var fd=new FormData();fd.append('file',file);
+    var conf=document.getElementById('confSlider').value;
+    var iou=document.getElementById('iouSlider').value;
+    xhr.open('POST','/api/detect?conf='+conf+'&iou='+iou,true);
+    if(!authDisabled&&apiKey)xhr.setRequestHeader('Authorization','Bearer '+apiKey);
+
+    var t0=Date.now();
+    xhr.upload.onprogress=function(e){
+      if(e.lengthComputable){
+        var pct=Math.round(e.loaded/e.total*100);
+        var spd=(Date.now()-t0)>0?formatSpeed(e.loaded/((Date.now()-t0)/1000)):'';
+        updateProgress('uploadFill','uploadText',pct,spd);
+      }
+    };
+    xhr.onprogress=function(e){
+      if(e.lengthComputable){
+        var pct=Math.round(e.loaded/e.total*100);
+        var spd=(Date.now()-t0)>0?formatSpeed(e.loaded/((Date.now()-t0)/1000)):'';
+        updateProgress('downloadFill','downloadText',pct,spd);
+      }
+    };
+    xhr.onload=function(){
+      if(xhr.status>=200&&xhr.status<300){
+        try{resolve(JSON.parse(xhr.responseText))}catch(ex){reject(new Error('解析响应失败'))}
+      }else{
+        var errMsg='检测失败';
+        try{var ej=JSON.parse(xhr.responseText);errMsg=ej.detail||errMsg}catch(_){}
+        if(xhr.status===401)errMsg='API Key 无效，请检查';
+        else if(xhr.status===403)errMsg='API Key 错误';
+        else if(xhr.status===429)errMsg='请求过于频繁，请稍后再试';
+        reject(new Error(errMsg));
+      }
+    };
+    xhr.onerror=function(){reject(new Error('网络错误，请检查连接'))};
+    xhr.ontimeout=function(){reject(new Error('请求超时，请检查网络'))};
+    xhr.timeout=240000;
+    showProgress('uploadProgress',true);
+    showProgress('downloadProgress',true);
+    xhr.send(fd);
+  });
+}
+
+// ============================================================
+//  Image Zoom — full viewer with drag, wheel, pinch, 1000% max
+// ============================================================
+(function(){
+var ZM={scale:1,x:0,y:0,minScale:0.1,maxScale:10,dragging:false,startX:0,startY:0,origX:0,origY:0,
+  pinchDist:0,pinchScale:1,imgW:0,imgH:0};
+var overlay,wrap,img,levelEl;
+
+function initZoom(){
+  overlay=$('zoomOverlay');wrap=$('zoomWrap');img=$('zoomImg');levelEl=$('zoomLevel');
+  wrap.addEventListener('mousedown',onMouseDown);
+  wrap.addEventListener('wheel',onWheel,{passive:false});
+  wrap.addEventListener('touchstart',onTouchStart,{passive:false});
+  wrap.addEventListener('touchmove',onTouchMove,{passive:false});
+  wrap.addEventListener('touchend',onTouchEnd);
+  overlay.addEventListener('keydown',onKeyDown);
+  overlay.addEventListener('mousedown',function(e){if(e.target===overlay)zoomClose()});
+}
+
+window.zoomOpen=function(src){
+  if(!overlay)initZoom();
+  img.src=src;img.onload=function(){ZM.imgW=img.naturalWidth;ZM.imgH=img.naturalHeight;zoomFit()};
+  overlay.classList.add('show');overlay.tabIndex=0;overlay.focus();
+};
+
+window.zoomClose=function(){overlay.classList.remove('show');ZM.scale=1;ZM.x=0;ZM.y=0};
+
+window.zoomIn=function(){setZoom(ZM.scale*1.5)};
+window.zoomOut=function(){setZoom(ZM.scale/1.5)};
+window.zoomFit=function(){ZM.x=0;ZM.y=0;setZoom(1)};
+window.zoomMax=function(){
+  var r=overlay.getBoundingClientRect();
+  var sx=r.width*0.95/(ZM.imgW||1),sy=r.height*0.95/(ZM.imgH||1);
+  setZoom(Math.min(ZM.maxScale,Math.max(sx,sy)*1));ZM.x=0;ZM.y=0;apply();
+};
+
+function setZoom(s){ZM.scale=Math.max(ZM.minScale,Math.min(ZM.maxScale,s));apply()}
+
+function apply(){
+  var tx='translate('+ZM.x+'px,'+ZM.y+'px) scale('+ZM.scale+')';
+  img.style.transform=tx;
+  levelEl.textContent=Math.round(ZM.scale*100)+'%';
+}
+
+function onMouseDown(e){
+  if(e.button!==0)return;e.preventDefault();ZM.dragging=true;ZM.startX=e.clientX;ZM.startY=e.clientY;ZM.origX=ZM.x;ZM.origY=ZM.y;
+  wrap.classList.add('dragging');
+  var onMove=function(ev){if(!ZM.dragging)return;ZM.x=ZM.origX+(ev.clientX-ZM.startX);ZM.y=ZM.origY+(ev.clientY-ZM.startY);apply()};
+  var onUp=function(){ZM.dragging=false;wrap.classList.remove('dragging');document.removeEventListener('mousemove',onMove);document.removeEventListener('mouseup',onUp)};
+  document.addEventListener('mousemove',onMove);document.addEventListener('mouseup',onUp);
+}
+
+function onWheel(e){
+  e.preventDefault();var d=e.deltaY>0?0.8:1.25;var r=wrap.getBoundingClientRect();
+  var mx=(e.clientX-r.left-r.width/2),my=(e.clientY-r.top-r.height/2);
+  var ns=Math.max(ZM.minScale,Math.min(ZM.maxScale,ZM.scale*d));var f=ns/ZM.scale;
+  ZM.x=mx-f*(mx-ZM.x);ZM.y=my-f*(my-ZM.y);ZM.scale=ns;apply();
+}
+
+function dist(t){var dx=t[0].clientX-t[1].clientX,dy=t[0].clientY-t[1].clientY;return Math.sqrt(dx*dx+dy*dy)}
+
+function onTouchStart(e){
+  if(e.touches.length===2){e.preventDefault();ZM.pinchDist=dist(e.touches);ZM.pinchScale=ZM.scale}
+  else if(e.touches.length===1&&ZM.scale>1){e.preventDefault();ZM.dragging=true;ZM.startX=e.touches[0].clientX;ZM.startY=e.touches[0].clientY;ZM.origX=ZM.x;ZM.origY=ZM.y}
+}
+
+function onTouchMove(e){
+  if(e.touches.length===2){e.preventDefault();var d=dist(e.touches);var ns=ZM.pinchScale*(d/ZM.pinchDist);
+    setZoom(Math.max(ZM.minScale,Math.min(ZM.maxScale,ns)))}
+  else if(e.touches.length===1&&ZM.dragging){e.preventDefault();ZM.x=ZM.origX+(e.touches[0].clientX-ZM.startX);ZM.y=ZM.origY+(e.touches[0].clientY-ZM.startY);apply()}
+}
+
+function onTouchEnd(e){if(e.touches.length<2)ZM.pinchDist=0;if(e.touches.length===0)ZM.dragging=false}
+
+function onKeyDown(e){if(e.key==='Escape')zoomClose();else if(e.key==='+'||e.key==='=')zoomIn();else if(e.key==='-')zoomOut();else if(e.key==='0')zoomFit()}
+
+window.toggleZoom=function(src){if(overlay&&overlay.classList.contains('show'))zoomClose();else if(src)zoomOpen(src)};
+})();
+
+// ============================================================
+//  Paste Support
+// ============================================================
+document.addEventListener('paste',function(e){
+  var items=e.clipboardData&&e.clipboardData.items;
+  if(!items)return;
+  for(var i=0;i<items.length;i++){
+    if(items[i].type.startsWith('image/')){
+      handleFile(items[i].getAsFile());
+      break;
+    }
+  }
+});
+
+// ============================================================
+//  Keyboard shortcut: Enter to detect
+// ============================================================
+document.addEventListener('keydown',function(e){
+  if(e.key==='Enter'&&!$('detectBtn').disabled&&selectedFile){
+    detect();
+  }
+});
+
+// ============================================================
+//  Model Selection
+// ============================================================
+function loadModels(){
+  fetch('/api/models').then(function(r){return r.json()}).then(function(d){
+    var sel=$('modelSelect');sel.innerHTML='';
+    if(!d.models||d.models.length===0){sel.innerHTML='<option value="">无可用模型</option>';return}
+    d.models.forEach(function(m){
+      var opt=document.createElement('option');opt.value=m.name;
+      opt.textContent=m.name+' ('+m.size_mb+'MB)';if(m.active)opt.selected=true;
+      sel.appendChild(opt)
+    });
+    var cur=d.models.find(function(m){return m.active});
+    $('modelStatus').textContent=cur?'当前: '+cur.name:'未选择'
+  }).catch(function(){$('modelStatus').textContent='获取失败'})
+  // Also fetch warm status
+  fetch('/api/models/warm-status',{
+    headers:!authDisabled&&apiKey?{'Authorization':'Bearer '+apiKey}:{}
+  }).then(function(r){return r.json()}).then(function(ws){
+    if(!ws.ok)return;
+    var html='';var count=0;
+    for(var name in ws.models){
+      var m=ws.models[name];
+      if(!m.warm)continue;count++;
+      var cls=m.is_main?'main':'secondary';
+      html+='<span class="'+cls+'">'+(m.is_main?'★ ':'')+name+'</span>';
+    }
+    $('warmStatus').innerHTML=count>0?html:'无预热模型';
+  }).catch(function(){});
+}
+
+function switchModel(name){
+  if(!name)return;$('modelStatus').textContent='切换中...';
+  var headers={'Content-Type':'application/json'};
+  if(!authDisabled&&apiKey)headers['Authorization']='Bearer '+apiKey;
+  var fd=JSON.stringify({model:name});
+  fetch('/api/select-model',{method:'POST',headers:headers,body:fd})
+  .then(function(r){return r.json()}).then(function(d){
+    if(d.ok){$('modelStatus').textContent='已切换: '+name;toast('模型已切换: '+name,'success');loadModels()}
+    else{$('modelStatus').textContent='切换失败';toast('模型切换失败','error')}
+  }).catch(function(){$('modelStatus').textContent='切换失败';toast('网络错误','error')})
+}
+
+// ============================================================
+//  Init
+// ============================================================
+startHeartbeat();
+loadModels();
+</script>
+</body>
+</html>

@@ -1,0 +1,20 @@
+enable_response_compression: true
+host: 0.0.0.0
+inference_timeout_seconds: 300
+input_size: 640
+max_upload_mb: 10
+model_path: models/drygrain_yolo26m_v2.onnx
+nms_threshold: 0.5
+port: 8000
+rate_limit_per_minute: 60
+require_api_key: true
+response_compress_min_size: 1000
+score_threshold: 0.25
+tunnel_url: ''
+upload_timeout_seconds: 120
+valuable_dir: Valuable photos
+valuable_enable: false
+valuable_low_ratio: 0.2
+valuable_low_threshold: 0.5
+valuable_very_low_ratio: 0.08
+valuable_very_low_threshold: 0.3
