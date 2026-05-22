@@ -1,4 +1,4 @@
-"""HTTP client for interacting with the Grain Counter API when server is running."""
+"""HTTP client for interacting with the YOLO Object Counter API when server is running."""
 import os
 import json
 import base64
@@ -6,12 +6,12 @@ import base64
 import requests
 
 
-class GrainAPIClient:
-    """Thin HTTP wrapper around the Grain Counter FastAPI server."""
+class CountAPIClient:
+    """Thin HTTP wrapper around the YOLO Object Counter FastAPI server."""
 
     def __init__(self, base_url=None, api_key=None):
         if base_url is None:
-            port = os.environ.get("GRAIN_PORT", "8000")
+            port = os.environ.get("COUNT_PORT", "8000")
             base_url = f"http://127.0.0.1:{port}"
         self.base_url = base_url.rstrip("/")
         self.api_key = api_key

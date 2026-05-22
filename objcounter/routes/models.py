@@ -6,12 +6,12 @@ import logging
 
 from fastapi import APIRouter, Request, HTTPException, Depends
 
-from graincounter.config import get_config, set_config, get_project_root
-from graincounter.detector import GrainDetector
-from graincounter.middleware import verify_api_key
-from graincounter.state import app_state
+from objcounter.config import get_config, set_config, get_project_root
+from objcounter.detector import ObjectDetector
+from objcounter.middleware import verify_api_key
+from objcounter.state import app_state
 
-logger = logging.getLogger("grain_web")
+logger = logging.getLogger("count_web")
 router = APIRouter(tags=["models"])
 
 
@@ -70,7 +70,7 @@ async def select_model(request: Request, _: str = Depends(verify_api_key)):
     # Load new model (cold load)
     try:
         new_detector = await asyncio.to_thread(
-            GrainDetector,
+            ObjectDetector,
             model_path=model_path,
             input_size=get_config("input_size", 640),
             score_threshold=get_config("score_threshold", 0.25),
@@ -121,7 +121,7 @@ async def warm_model(request: Request, _: str = Depends(verify_api_key)):
 
     try:
         detector = await asyncio.to_thread(
-            GrainDetector,
+            ObjectDetector,
             model_path=model_path,
             input_size=get_config("input_size", 640),
             score_threshold=get_config("score_threshold", 0.25),

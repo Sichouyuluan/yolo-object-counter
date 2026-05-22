@@ -1,21 +1,21 @@
-# Grain Counter — grain
+# YOLO Object Counter — count
 
 ## Target software
 
-**Grain Counter (小麦籽粒检测)** — a FastAPI web service for wheat grain detection and counting using YOLOv8 ONNX models.
+**YOLO Object Counter (目标检测计数)** — a FastAPI web service for object detection and counting using YOLOv8 ONNX models.
 
 Source path: `<project_root>/`
 
 ## Mode: One-shot detection + server management
 
 The harness operates in two modes:
-1. **Direct detection**: Uses `GrainDetector` directly (imports the project package) — no server required
+1. **Direct detection**: Uses `ObjectDetector` directly (imports the project package) — no server required
 2. **Server API**: Communicates with a running FastAPI server via HTTP for model switching, stats, key management, etc.
 
 ## Command architecture
 
 ```
-grain
+count
 ├── detect <images...>      # One-shot: run YOLO inference directly
 ├── server                  # Server lifecycle (subprocess management)
 │   ├── start
@@ -52,14 +52,14 @@ grain
 | CLI command | Backend | Notes |
 |-------------|---------|-------|
 | `detect` | `DetectorBackend` (direct import) | No server needed |
-| `detect --server` | `GrainAPIClient.detect()` | Via HTTP |
+| `detect --server` | `CountAPIClient.detect()` | Via HTTP |
 | `server *` | `ServerBackend` (subprocess) | PID file tracking |
 | `config *` | `ConfigBackend` (YAML read/write) | Direct file I/O |
 | `model list` | `DetectorBackend.list_models()` | Direct filesystem |
-| `model switch/warm` | `GrainAPIClient` | Requires running server |
-| `key *` | `GrainAPIClient` | Requires running server |
-| `stats` | `GrainAPIClient` | Requires running server |
-| `health` | `GrainAPIClient` | Requires running server |
+| `model switch/warm` | `CountAPIClient` | Requires running server |
+| `key *` | `CountAPIClient` | Requires running server |
+| `stats` | `CountAPIClient` | Requires running server |
+| `health` | `CountAPIClient` | Requires running server |
 
 ## JSON output
 

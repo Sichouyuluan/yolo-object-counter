@@ -1,10 +1,10 @@
-"""Grain Counter CLI — command-line interface for wheat grain detection.
+"""YOLO Object Counter CLI — command-line interface for object detection and counting.
 
 Usage:
-    cli-anything-graincounter detect photo.jpg
-    cli-anything-graincounter server start
-    cli-anything-graincounter config show
-    cli-anything-graincounter                    # REPL mode
+    cli-anything-objcounter detect photo.jpg
+    cli-anything-objcounter server start
+    cli-anything-objcounter config show
+    cli-anything-objcounter                    # REPL mode
 """
 import os
 import sys
@@ -19,7 +19,7 @@ import click
 _DetectorBackend = None
 _ServerBackend = None
 _ConfigBackend = None
-_GrainAPIClient = None
+_CountAPIClient = None
 
 
 def _get_detector_backend():
@@ -47,13 +47,13 @@ def _get_config_backend():
 
 
 def _get_client():
-    global _GrainAPIClient
-    if _GrainAPIClient is None:
-        from .utils.http_client import GrainAPIClient as GC
-        _GrainAPIClient = GC
-    api_key = os.environ.get("GRAIN_API_KEY")
-    port = os.environ.get("GRAIN_PORT", "8000")
-    return _GrainAPIClient(base_url=f"http://127.0.0.1:{port}", api_key=api_key)
+    global _CountAPIClient
+    if _CountAPIClient is None:
+        from .utils.http_client import CountAPIClient as GC
+        _CountAPIClient = GC
+    api_key = os.environ.get("COUNT_API_KEY")
+    port = os.environ.get("COUNT_PORT", "8000")
+    return _CountAPIClient(base_url=f"http://127.0.0.1:{port}", api_key=api_key)
 
 
 def _print_json(data):
@@ -70,22 +70,22 @@ def _print_json(data):
 @click.option("--port", default=None, help="Server port (default: 8000)")
 @click.pass_context
 def cli(ctx, json_output, api_key, port):
-    """Grain Counter CLI — 小麦籽粒检测命令行工具.
+    """YOLO Object Counter CLI — 目标检测计数命令行工具.
 
     Default (no subcommand) enters REPL interactive mode.
     """
     ctx.ensure_object(dict)
     ctx.obj["json"] = json_output
     if api_key:
-        os.environ["GRAIN_API_KEY"] = api_key
+        os.environ["COUNT_API_KEY"] = api_key
         ctx.obj["api_key"] = api_key
     if port:
-        os.environ["GRAIN_PORT"] = port
+        os.environ["COUNT_PORT"] = port
         ctx.obj["port"] = port
 
     if ctx.invoked_subcommand is None:
         # Enter REPL mode
-        repl = GrainREPL(ctx)
+        repl = CountREPL(ctx)
         repl.cmdloop()
 
 
@@ -98,18 +98,18 @@ def cli(ctx, json_output, api_key, port):
 @click.option("--conf", "-c", type=float, default=None, help="Confidence threshold (0.01-1.0)")
 @click.option("--iou", "-i", type=float, default=None, help="IoU threshold (0.01-1.0)")
 @click.option("--output", "-o", multiple=True, help="Save annotated image to path (one per input)")
-@click.option("--model", "-m", default=None, help="Model name (e.g. grain_v8m_v11.onnx)")
+@click.option("--model", "-m", default=None, help="Model name (e.g. yolo_v8m_v11.onnx)")
 @click.option("--json", "json_flag", is_flag=True, help="JSON output with base64 result image")
 @click.option("--server", "use_server", is_flag=True, help="Use running server instead of direct detection")
 @click.pass_context
 def detect(ctx, images, conf, iou, output, model, json_flag, use_server):
-    """Detect grains in one or more images.
+    """Detect objects in one or more images.
 
     \b
     Examples:
-      cli-anything-graincounter detect photo.jpg
-      cli-anything-graincounter detect *.jpg --conf 0.5 --output results/
-      cli-anything-graincounter detect a.jpg b.jpg -o a_out.jpg -o b_out.jpg
+      cli-anything-objcounter detect photo.jpg
+      cli-anything-objcounter detect *.jpg --conf 0.5 --output results/
+      cli-anything-objcounter detect a.jpg b.jpg -o a_out.jpg -o b_out.jpg
     """
     output_paths = list(output) if output else []
 
@@ -120,7 +120,7 @@ def detect(ctx, images, conf, iou, output, model, json_flag, use_server):
             if json_flag or ctx.obj.get("json"):
                 _print_json(result)
             else:
-                click.echo(f"{os.path.basename(img)}: {result['count']} grains ({result['elapsed_ms']}ms)")
+                click.echo(f"{os.path.basename(img)}: {result['count']} objects ({result['elapsed_ms']}ms)")
             if output_paths and idx < len(output_paths):
                 # Save base64 result image
                 import base64
@@ -139,7 +139,7 @@ def detect(ctx, images, conf, iou, output, model, json_flag, use_server):
         if json_flag or ctx.obj.get("json"):
             _print_json(result)
         else:
-            click.echo(f"{os.path.basename(img)}: {result['count']} grains ({result['elapsed_ms']}ms)")
+            click.echo(f"{os.path.basename(img)}: {result['count']} objects ({result['elapsed_ms']}ms)")
             if out:
                 click.echo(f"  -> {out}")
 
@@ -150,7 +150,7 @@ def detect(ctx, images, conf, iou, output, model, json_flag, use_server):
 
 @cli.group()
 def server():
-    """Manage the Grain Counter web server."""
+    """Manage the YOLO Object Counter web server."""
 
 
 @server.command("start")
@@ -249,7 +249,7 @@ def server_url(ctx):
 
 @cli.group()
 def config():
-    """Manage Grain Counter configuration."""
+    """Manage YOLO Object Counter configuration."""
 
 
 @config.command("show")
@@ -528,22 +528,22 @@ def health(ctx):
 def _get_config_val(key, default=None):
     """Lazy-load a single config value."""
     try:
-        from graincounter.config import get_config
+        from objcounter.config import get_config
         return get_config(key, default)
     except Exception:
         return default
 
 
-class GrainREPL(cmd.Cmd):
-    """Interactive REPL for Grain Counter CLI."""
+class CountREPL(cmd.Cmd):
+    """Interactive REPL for YOLO Object Counter CLI."""
 
     intro = """
 ╔══════════════════════════════════════════╗
-║   🌾 Grain Counter CLI — Interactive    ║
+║   🔍 YOLO Object Counter CLI — Interactive    ║
 ║   Type 'help' for commands, 'quit' to exit  ║
 ╚══════════════════════════════════════════╝
 """
-    prompt = "grain> "
+    prompt = "count> "
 
     def __init__(self, cli_ctx):
         super().__init__()
@@ -561,7 +561,7 @@ class GrainREPL(cmd.Cmd):
             click.echo(f"Error: {result.exception}", err=True)
 
     def do_detect(self, arg):
-        """detect <image...> [--conf C] [--iou I] [-o OUTPUT] [-m MODEL]: Run grain detection"""
+        """detect <image...> [--conf C] [--iou I] [-o OUTPUT] [-m MODEL]: Run object detection"""
         self._run_click("detect", *shlex.split(arg))
 
     def do_server(self, arg):

@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>🌾 小麦籽粒检测 - Grain Detector</title>
+<title>🔍 YOLO 目标检测计数 - Object Counter</title>
 <style>
 *,::before,::after{box-sizing:border-box;margin:0;padding:0}
 body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:#0f1117;color:#e2e8f0;min-height:100vh;line-height:1.5}
@@ -157,8 +157,8 @@ details.adv-settings .slider-group{padding:0 1rem 0.875rem}
 
 <!-- Header -->
 <header class="border-b border-surf-border px-4 md:px-6 py-3 flex items-center gap-3">
-  <span class="text-2xl">🌾</span>
-  <h1 class="text-lg font-semibold">小麦籽粒检测</h1>
+  <span class="text-2xl">🔍</span>
+  <h1 class="text-lg font-semibold">目标检测计数</h1>
   <span class="bg-accent text-black text-xs font-bold px-2.5 py-0.5 rounded-full">YOLOv8</span>
   <div class="ml-auto flex items-center gap-2 bg-surf-card border border-surf-border rounded-full px-3 py-1.5 text-xs">
     <span id="connDot" class="w-2.5 h-2.5 rounded-full bg-warn shadow-[0_0_6px_#facc15]"></span>
@@ -223,7 +223,7 @@ details.adv-settings .slider-group{padding:0 1rem 0.875rem}
     <div class="grid grid-cols-3 gap-3">
       <div class="bg-surf-card border border-surf-border rounded-xl p-4 text-center">
         <div class="text-3xl font-bold text-accent" id="countNum">0</div>
-        <div class="text-xs text-dim mt-1">🌾 籽粒数</div>
+        <div class="text-xs text-dim mt-1">🔍 目标数</div>
       </div>
       <div class="bg-surf-card border border-surf-border rounded-xl p-4 text-center">
         <div class="text-3xl font-bold text-accent" id="timeNum">0</div>
@@ -322,7 +322,7 @@ details.adv-settings .slider-group{padding:0 1rem 0.875rem}
 // ============================================================
 //  State
 // ============================================================
-var apiKey=localStorage.getItem('grain_api_key')||'';
+var apiKey=localStorage.getItem('count_api_key')||'';
 var selectedFile=null;
 var authDisabled=false;
 var serverOnline=false;
@@ -444,7 +444,7 @@ if(apiKey){
 function saveKey(){
   apiKey=$('keyInput').value.trim();
   if(!apiKey){toast('请输入 API Key','error');return}
-  localStorage.setItem('grain_api_key',apiKey);
+  localStorage.setItem('count_api_key',apiKey);
   $('keyStatus').textContent='✅ Key 已保存';
   $('keyStatus').style.color='#4ade80';
   toast('API Key 已保存','success');

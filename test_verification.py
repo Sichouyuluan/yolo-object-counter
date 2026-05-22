@@ -5,19 +5,19 @@ sys.path.insert(0, os.path.dirname(__file__))
 
 def test_imports():
     """All modules import correctly"""
-    from graincounter.config import load_config, get_config
-    from graincounter.logger import setup_logger
-    from graincounter.rate_limiter import RateLimiter
-    from graincounter.device_tracker import OnlineDeviceTracker
-    from graincounter.detector import GrainDetector
-    from graincounter.valuable import ValuablePhotoSaver
-    from graincounter.stats import DetectionStats
+    from objcounter.config import load_config, get_config
+    from objcounter.logger import setup_logger
+    from objcounter.rate_limiter import RateLimiter
+    from objcounter.device_tracker import OnlineDeviceTracker
+    from objcounter.detector import ObjectDetector
+    from objcounter.valuable import ValuablePhotoSaver
+    from objcounter.stats import DetectionStats
     import web_server
     print("  [PASS] All imports OK")
 
 def test_rate_limiter_memory_cleanup():
     """RateLimiter has memory cleanup (task 1)"""
-    from graincounter.rate_limiter import RateLimiter
+    from objcounter.rate_limiter import RateLimiter
     r = RateLimiter(10, 60)
     assert hasattr(r, '_last_cleanup'), "Missing _last_cleanup"
     assert hasattr(r, '_cleanup_old'), "Missing _cleanup_old method"
@@ -25,7 +25,7 @@ def test_rate_limiter_memory_cleanup():
 
 def test_device_tracker_cleanup():
     """DeviceTracker has offline cleanup (task 2)"""
-    from graincounter.device_tracker import OnlineDeviceTracker
+    from objcounter.device_tracker import OnlineDeviceTracker
     t = OnlineDeviceTracker(30)
     assert hasattr(t, '_last_cleanup'), "Missing _last_cleanup"
     assert hasattr(t, '_cleanup_offline'), "Missing _cleanup_offline method"
@@ -33,7 +33,7 @@ def test_device_tracker_cleanup():
 
 def test_valuable_thread_safe():
     """ValuablePhotoSaver increment_count is lock-protected (task 3)"""
-    from graincounter.valuable import ValuablePhotoSaver
+    from objcounter.valuable import ValuablePhotoSaver
     v = ValuablePhotoSaver()
     assert hasattr(v, 'increment_count'), "Missing increment_count method"
     old = v.saved_count
@@ -43,7 +43,7 @@ def test_valuable_thread_safe():
 
 def test_ip_ban():
     """RateLimiter has IP ban support (task 10)"""
-    from graincounter.rate_limiter import RateLimiter
+    from objcounter.rate_limiter import RateLimiter
     r = RateLimiter(10, 60, ban_minutes=1)
     assert hasattr(r, 'is_banned'), "Missing is_banned"
     assert hasattr(r, 'record_rejection'), "Missing record_rejection"
@@ -55,7 +55,7 @@ def test_ip_ban():
 
 def test_detection_stats():
     """DetectionStats counts correctly (task 12)"""
-    from graincounter.stats import DetectionStats
+    from objcounter.stats import DetectionStats
     s = DetectionStats()
     s.record_success("1.1.1.1")
     s.record_success("2.2.2.2")
@@ -75,22 +75,22 @@ def test_web_server_import():
     """web_server imports without errors"""
     import web_server
     assert hasattr(web_server, 'app'), "Missing app"
-    from graincounter.routes.detect import detect_semaphore
+    from objcounter.routes.detect import detect_semaphore
     assert detect_semaphore is not None
-    from graincounter.state import app_state
+    from objcounter.state import app_state
     assert app_state.detect_rate_limiter is not None
     print("  [PASS] web_server imports")
 
 def test_web_server_config():
     """web_server config loads correctly"""
-    from graincounter.config import load_config
+    from objcounter.config import load_config
     cfg = load_config()
     assert cfg['port'] == 8000, f"Port: {cfg['port']}"
     assert 'model_path' in cfg
     print(f"  [PASS] Config loaded (model={cfg['model_path']})")
 
 if __name__ == "__main__":
-    print("=== Grain Counter Verification Tests ===")
+    print("=== YOLO Object Counter Verification Tests ===")
     tests = [
         ("Imports", test_imports),
         ("RateLimiter cleanup", test_rate_limiter_memory_cleanup),

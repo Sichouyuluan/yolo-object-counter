@@ -1,4 +1,4 @@
-"""Entry point for python -m cli_anything.graincounter"""
-from .graincounter_cli import main
+"""Entry point for python -m cli_anything.objcounter"""
+from .objcounter_cli import main
 
 main()

@@ -11,13 +11,13 @@ import cv2
 import numpy as np
 from fastapi import APIRouter, UploadFile, File, HTTPException, Depends, Request, Query
 
-from graincounter.config import get_config
-from graincounter.detector import draw_results
-from graincounter.stats import detection_stats
-from graincounter.state import app_state
-from graincounter.middleware import verify_api_key
+from objcounter.config import get_config
+from objcounter.detector import draw_results
+from objcounter.stats import detection_stats
+from objcounter.state import app_state
+from objcounter.middleware import verify_api_key
 
-logger = logging.getLogger("grain_web")
+logger = logging.getLogger("count_web")
 router = APIRouter(tags=["detect"])
 
 detect_semaphore = asyncio.Semaphore(2)

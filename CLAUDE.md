@@ -205,9 +205,9 @@ Default to surfacing uncertainty, not hiding it.
 
 
 <!-- 项目特定配置 -->
-# 🌾 Grain Counter — 项目结构
+# 🔍 YOLO Object Counter — 项目结构
 
-> 基于 longtimerun 框架适配的小麦籽粒检测 Web 服务项目
+> 基于 longtimerun 框架适配的通用小物体检测计数 Web 服务项目
 
 ## 核心约定
 
@@ -232,7 +232,7 @@ git add -A && git commit -m "task N: description"
 ```
 ├── web_server.py               # FastAPI 入口 + lifespan + uvicorn 启动
 ├── server_panel.py             # Tkinter/CustomTkinter 管理面板
-├── graincounter/
+├── objcounter/
 │   ├── __init__.py
 │   ├── config.py               # 配置管理（支持持久化）
 │   ├── logger.py               # 日志系统 (PinHidingFilter)

@@ -3,12 +3,12 @@ import os
 import time
 import cv2
 import numpy as np
-from graincounter.logger import get_logger
+from objcounter.logger import get_logger
 
 logger = get_logger()
 
 
-class GrainDetector:
+class ObjectDetector:
     """YOLOv8 ONNX 推理封装"""
 
     def __init__(self, model_path, input_size=640, score_threshold=0.25, nms_threshold=0.5):
@@ -61,7 +61,7 @@ def draw_results(img_bgr, results):
         cv2.rectangle(vis, (x1, y1 - th - 8), (x1 + tw + 4, y1), (0, 255, 0), -1)
         cv2.putText(vis, label, (x1 + 2, y1 - 4), cv2.FONT_HERSHEY_SIMPLEX, 0.5, (0, 0, 0), 1)
     count = len(results)
-    label = f"Grain: {count}"
+    label = f"Object: {count}"
     (tw, th), _ = cv2.getTextSize(label, cv2.FONT_HERSHEY_SIMPLEX, 1.2, 2)
     cv2.rectangle(vis, (5, 5), (15 + tw, 15 + th), (0, 0, 0), -1)
     cv2.putText(vis, label, (10, 10 + th), cv2.FONT_HERSHEY_SIMPLEX, 1.2, (0, 255, 0), 2)

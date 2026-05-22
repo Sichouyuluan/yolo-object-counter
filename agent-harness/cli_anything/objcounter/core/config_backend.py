@@ -7,7 +7,7 @@ _PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(
 if _PROJECT_ROOT not in sys.path:
     sys.path.insert(0, _PROJECT_ROOT)
 
-from graincounter.config import load_config, get_config, set_config, DEFAULT_CONFIG, get_project_root
+from objcounter.config import load_config, get_config, set_config, DEFAULT_CONFIG, get_project_root
 
 
 class ConfigBackend:

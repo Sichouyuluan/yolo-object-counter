@@ -9,7 +9,7 @@ import time
 import urllib.request
 import yaml
 
-from graincounter.theme import Theme
+from objcounter.theme import Theme
 
 
 class PanelControls:
@@ -25,7 +25,7 @@ class PanelControls:
         if os.path.exists(key_file):
             with open(key_file, "r") as f:
                 return f.read().strip()
-        return os.environ.get("GRAIN_API_KEY")
+        return os.environ.get("COUNT_API_KEY")
 
     def _api_request(self, url, method="GET", data=None, timeout=3):
         """发送带 API Key 的 HTTP 请求，返回 (status, body_dict_or_None)"""
@@ -659,7 +659,7 @@ class PanelControls:
                 r = subprocess.run(["cloudflared", "tunnel", "list"],
                                    capture_output=True, text=True, timeout=10,
                                    creationflags=subprocess.CREATE_NO_WINDOW if sys.platform == "win32" else 0)
-                if r.returncode == 0 and "grain-counter" in r.stdout:
+                if r.returncode == 0 and "yolo-object-counter" in r.stdout:
                     connected = "connected" in r.stdout.lower() or "running" in r.stdout.lower()
                     self.root.after(0, lambda: self._set_cf(connected, "已连接" if connected else "已断开"))
                 else:
@@ -692,7 +692,7 @@ class PanelControls:
             self.root.after(0, lambda: self._log("启动 Cloudflared 隧道...", "INFO"))
             try:
                 proc = subprocess.Popen(
-                    ["cloudflared", "tunnel", "run", "grain-counter"],
+                    ["cloudflared", "tunnel", "run", "yolo-object-counter"],
                     stdout=subprocess.PIPE, stderr=subprocess.STDOUT,
                     text=True, encoding="utf-8", errors="replace",
                     creationflags=subprocess.CREATE_NO_WINDOW if sys.platform == "win32" else 0

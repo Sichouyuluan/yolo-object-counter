@@ -16,7 +16,7 @@ _PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(
 
 def _run(*args):
     """Run the CLI as a subprocess."""
-    cmd = [sys.executable, "-m", "cli_anything.graincounter", "--json"] + list(args)
+    cmd = [sys.executable, "-m", "cli_anything.objcounter", "--json"] + list(args)
     result = subprocess.run(
         cmd, capture_output=True, text=True, encoding="utf-8", errors="replace",
         cwd=_PROJECT_ROOT, timeout=60,

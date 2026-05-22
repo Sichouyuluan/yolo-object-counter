@@ -1,5 +1,5 @@
 """
-小麦籽粒检测 — 服务器管理面板（主入口）
+目标检测计数 — 服务器管理面板（主入口）
 功能拆分: theme.py | panel_ui.py | panel_controls.py
 """
 from __future__ import annotations
@@ -16,16 +16,16 @@ from datetime import datetime
 import tkinter as tk
 from tkinter import messagebox
 
-from graincounter.theme import Theme
-from graincounter.panel_ui import PanelUI
-from graincounter.panel_controls import PanelControls
+from objcounter.theme import Theme
+from objcounter.panel_ui import PanelUI
+from objcounter.panel_controls import PanelControls
 
 
 class ServerPanel(PanelUI, PanelControls):
     def __init__(self):
         self.root = tk.Tk()
         self.root.withdraw()
-        self.root.title("Grain Counter — 服务器管理面板")
+        self.root.title("YOLO Object Counter — 服务器管理面板")
         self.root.geometry("920x680")
         self.root.configure(bg=Theme.bg)
         self.root.resizable(True, True)
@@ -116,10 +116,10 @@ class ServerPanel(PanelUI, PanelControls):
             if os.path.exists(config_path):
                 with open(config_path, "r", encoding="utf-8") as f:
                     cfg = yaml.safe_load(f) or {}
-                return cfg.get("model_path", "models/grain_v8m_v10.onnx")
+                return cfg.get("model_path", "models/yolo_v8m_v10.onnx")
         except Exception:
             pass
-        return "models/grain_v8m_v10.onnx"
+        return "models/yolo_v8m_v10.onnx"
 
     def _load_panel_config(self):
         try:
@@ -332,7 +332,7 @@ class ServerPanel(PanelUI, PanelControls):
             pass
 
     def run(self, auto_start=False):
-        # Write PID file for grainoff
+        # Write PID file for countoff
         pid_path = os.path.join(self.project_dir, ".panel_pid")
         try:
             with open(pid_path, "w") as f:
@@ -366,7 +366,7 @@ class ServerPanel(PanelUI, PanelControls):
 
 if __name__ == "__main__":
     import argparse
-    parser = argparse.ArgumentParser(description="Grain Counter 服务器管理面板")
+    parser = argparse.ArgumentParser(description="YOLO Object Counter 服务器管理面板")
     parser.add_argument("--auto-start", action="store_true", help="自动启动服务器和 Cloudflared 隧道")
     args = parser.parse_args()
     ServerPanel().run(auto_start=args.auto_start)

@@ -1,6 +1,6 @@
-# 🌾 Grain Counter — 小麦籽粒检测 Web 服务
+# 🔍 YOLO Object Counter — 通用小物体检测计数系统
 
-基于 YOLO ONNX 的小麦灌浆期籽粒自动检测与计数 Web 服务。支持手机/平板/桌面浏览器访问，提供 CLI 命令行工具供 AI Agent 调用。
+基于 YOLO ONNX 的通用小物体自动检测与计数 Web 服务。支持手机/平板/桌面浏览器访问，提供 CLI 命令行工具供 AI Agent 调用。
 
 ---
 
@@ -35,7 +35,7 @@ python web_server.py --port 8000
 
 **支持的模型格式**：YOLO ONNX（YOLOv8/v9/v10/v11/v12/26m 等通用 YOLO 导出格式均可使用）。理论上所有 Ultralytics YOLO 系列导出的 ONNX 模型都支持，只需输入/输出张量格式兼容即可。
 
-推荐模型：`drygrain_yolo26m_v2.onnx`（开源后提供下载链接）
+推荐模型：`yolo26m_v2.onnx`（开源后提供下载链接）
 
 ---
 
@@ -61,48 +61,48 @@ python server_panel.py
 
 ```bash
 # 安装后可用四个命令
-grain       # 主 CLI（检测、配置、模型管理、服务器管理、统计）
-grainon     # 一键启动全栈（面板 + 服务器 + Cloudflared）
-grainoff    # 一键停止全栈
-grainkey    # 查看当前 API Key
+count       # 主 CLI（检测、配置、模型管理、服务器管理、统计）
+counton     # 一键启动全栈（面板 + 服务器 + Cloudflared）
+countoff    # 一键停止全栈
+countkey    # 查看当前 API Key
 ```
 
-#### grain 子命令
+#### count 子命令
 
 ```bash
 # 直接检测图片（不需要启动服务器）
-grain detect image.jpg
+count detect image.jpg
 
 # 批量检测
-grain detect img1.jpg img2.jpg img3.jpg
+count detect img1.jpg img2.jpg img3.jpg
 
 # 服务器管理
-grain server start      # 启动 Web 服务器
-grain server stop       # 停止 Web 服务器
-grain server status     # 查看服务器状态
+count server start      # 启动 Web 服务器
+count server stop       # 停止 Web 服务器
+count server status     # 查看服务器状态
 
 # 配置管理
-grain config show       # 查看当前配置
-grain config set port 8080   # 修改端口
-grain config set score_threshold 0.3  # 修改置信度阈值
+count config show       # 查看当前配置
+count config set port 8080   # 修改端口
+count config set score_threshold 0.3  # 修改置信度阈值
 
 # 模型管理
-grain model list        # 列出可用模型
-grain model switch drygrain_yolo26m_v2.onnx  # 切换模型
+count model list        # 列出可用模型
+count model switch yolo26m_v2.onnx  # 切换模型
 
 # 健康检查与统计
-grain health            # 服务器健康状态
-grain stats             # 检测统计（次数、平均耗时、错误数）
-grain key show          # 显示 API Key
-grain key regenerate    # 重新生成 API Key
+count health            # 服务器健康状态
+count stats             # 检测统计（次数、平均耗时、错误数）
+count key show          # 显示 API Key
+count key regenerate    # 重新生成 API Key
 ```
 
 #### 一键命令
 
 ```bash
-grainon    # 依次启动：管理面板 → Web 服务器 → Cloudflared 隧道
-grainoff   # 依次停止：Cloudflared → Web 服务器 → 管理面板
-grainkey   # 打印当前 API Key
+counton    # 依次启动：管理面板 → Web 服务器 → Cloudflared 隧道
+countoff   # 依次停止：Cloudflared → Web 服务器 → 管理面板
+countkey   # 打印当前 API Key
 ```
 
 ### 方式三：Web 界面
@@ -150,7 +150,7 @@ grainkey   # 打印当前 API Key
 **顶部三个统计卡片（从左到右）：**
 | 卡片 | 内容 |
 |------|------|
-| 🌾 籽粒数 | 检测到的籽粒总数，大号绿色字体 |
+| 🔍 目标数 | 检测到的目标总数，大号绿色字体 |
 | ⚡ 耗时 (ms) | 服务器推理耗时，毫秒 |
 | 📐 尺寸 | 图片分辨率（宽 × 高） |
 
@@ -228,7 +228,7 @@ host: "0.0.0.0"              # 监听地址
 require_api_key: true         # 是否要求 API Key 认证
 
 # 检测
-model_path: models/drygrain_yolo26m_v2.onnx  # 模型文件路径
+model_path: models/yolo26m_v2.onnx  # 模型文件路径
 input_size: 640               # 模型输入尺寸
 score_threshold: 0.25         # 置信度阈值
 nms_threshold: 0.5            # NMS 阈值
@@ -275,7 +275,7 @@ tunnel_url: ""                # 留空，自动从 cloudflared 配置检测
 
 | 路由 | 方法 | 说明 |
 |------|------|------|
-| `/api/detect` | POST | 上传图片进行籽粒检测 |
+| `/api/detect` | POST | 上传图片进行目标检测 |
 | `/api/key` | GET | 获取 API Key |
 | `/api/key/regenerate` | POST | 重新生成 API Key |
 | `/api/toggle-auth` | POST | 切换认证开关 |
@@ -297,7 +297,7 @@ curl http://localhost:8000/api/key
 # 图片检测
 curl -X POST http://localhost:8000/api/detect \
   -H "Authorization: Bearer <API_KEY>" \
-  -F "file=@wheat.jpg"
+  -F "file=@sample.jpg"
 
 # 查看统计
 curl -H "Authorization: Bearer <API_KEY>" \
@@ -315,13 +315,13 @@ curl -H "Authorization: Bearer <API_KEY>" \
 cloudflared tunnel login
 
 # 创建隧道
-cloudflared tunnel create grain-counter
+cloudflared tunnel create yolo-object-counter
 
 # 配置 DNS（在 Cloudflare Dashboard 中）
-cloudflared tunnel route dns grain-counter your-domain.example.com
+cloudflared tunnel route dns yolo-object-counter your-domain.example.com
 
 # 启动
-cloudflared tunnel run grain-counter
+cloudflared tunnel run yolo-object-counter
 ```
 
 管理面板会自动从 `~/.cloudflared/config.yml` 读取隧道 URL 并显示。
@@ -358,7 +358,7 @@ tailscale up
 ├── web_server.py             # FastAPI 入口
 ├── server_panel.py           # 桌面管理面板（Tkinter）
 ├── test_verification.py      # 验证测试
-├── graincounter/             # 核心包
+├── objcounter/               # 核心包
 │   ├── config.py             #   配置管理
 │   ├── detector.py           #   YOLO ONNX 检测器
 │   ├── guard.py              #   ScanGuard 扫描防护
@@ -379,7 +379,7 @@ tailscale up
 │       └── pages.py          #     页面 + 优质照片
 ├── agent-harness/            # CLI 工具（AI Agent 接口）
 │   ├── setup.py
-│   └── cli_anything/graincounter/
+│   └── cli_anything/objcounter/
 ├── templates/
 │   └── index.html            # Web 前端
 ├── models/                   # 模型文件目录
@@ -402,7 +402,7 @@ tailscale up
 | v0.1.0 | 2026-04-27 | 初始原型 |
 | v0.7.0 | 2026-05-03 | 低带宽优化、骨架屏 |
 | v0.8.0 | 2026-05-11 | 项目重构、模块化 |
-| v2.0.0 | 2026-05-15 | graincounter/ 包拆分 |
+| v2.0.0 | 2026-05-15 | objcounter/ 包拆分 |
 | v3.0.0 | 2026-05-17 | Cloudflared 隧道 |
 | v4.1.0 | 2026-05-19 | CLI 工具 + 公开发布 |
 

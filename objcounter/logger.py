@@ -42,7 +42,7 @@ class _SafeFormatMessageMixin:
             return str(getattr(record, 'msg', ''))
 
 
-def setup_logger(name="grain_web", log_dir=None, level=logging.INFO) -> logging.Logger:
+def setup_logger(name="count_web", log_dir=None, level=logging.INFO) -> logging.Logger:
     """配置并返回 logger 实例"""
     # Monkey-patch uvicorn 的 AccessFormatter 防止空 args 崩溃
     try:
@@ -80,14 +80,14 @@ def setup_logger(name="grain_web", log_dir=None, level=logging.INFO) -> logging.
         )
     os.makedirs(log_dir, exist_ok=True)
     log_file = os.path.join(
-        log_dir, f"grain_{datetime.now().strftime('%Y%m%d_%H%M%S')}.log"
+        log_dir, f"count_{datetime.now().strftime('%Y%m%d_%H%M%S')}.log"
     )
     fh = RotatingFileHandler(log_file, encoding="utf-8", maxBytes=10*1024*1024, backupCount=5)
     fh.setLevel(level)
     fh.setFormatter(formatter)
     logger.addHandler(fh)
 
-    # 给 grain_web logger 自身添加 API Key 脱敏过滤器
+    # 给 count_web logger 自身添加 API Key 脱敏过滤器
     if not any(isinstance(f, PinHidingFilter) for f in logger.filters):
         logger.addFilter(PinHidingFilter())
 
