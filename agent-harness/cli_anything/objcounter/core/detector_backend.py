@@ -1,4 +1,4 @@
-"""Direct detection backend — uses GrainDetector without a running server."""
+"""Direct detection backend — uses ObjectDetector without a running server."""
 import os
 import sys
 import time
@@ -9,14 +9,14 @@ from pathlib import Path
 import cv2
 import numpy as np
 
-# Resolve project root relative to this file (agent-harness/cli_anything/graincounter/core/ -> 5 levels up)
+# Resolve project root relative to this file (agent-harness/cli_anything/objcounter/core/ -> 5 levels up)
 _HERE = os.path.dirname(os.path.abspath(__file__))
 _PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(_HERE))))
 if _PROJECT_ROOT not in sys.path:
     sys.path.insert(0, _PROJECT_ROOT)
 
-from graincounter.config import load_config, get_config
-from graincounter.detector import GrainDetector, draw_results
+from objcounter.config import load_config, get_config
+from objcounter.detector import ObjectDetector, draw_results
 
 
 class DetectorBackend:
@@ -37,7 +37,7 @@ class DetectorBackend:
             raise FileNotFoundError(f"Model not found: {model_path}")
 
         if self._detector is None or model_name != self._current_model:
-            self._detector = GrainDetector(
+            self._detector = ObjectDetector(
                 model_path=model_path,
                 input_size=get_config("input_size", 640),
                 score_threshold=get_config("score_threshold", 0.25),

@@ -1,10 +1,10 @@
 from setuptools import setup, find_namespace_packages
 
 setup(
-    name="cli-anything-graincounter",
+    name="cli-anything-objcounter",
     version="0.1.0",
-    description="CLI harness for Grain Counter (wheat grain detection service)",
-    author="Grain Counter Team",
+    description="CLI harness for YOLO Object Counter (object detection and counting service)",
+    author="YOLO Object Counter Team",
     python_requires=">=3.10",
     packages=find_namespace_packages(include=["cli_anything.*"]),
     install_requires=[
@@ -24,11 +24,11 @@ setup(
     },
     entry_points={
         "console_scripts": [
-            "cli-anything-graincounter=cli_anything.graincounter.graincounter_cli:main",
-            "grain=cli_anything.graincounter.graincounter_cli:main",
-            "grainon=cli_anything.graincounter.lifecycle:grainon",
-            "grainoff=cli_anything.graincounter.lifecycle:grainoff",
-            "grainkey=cli_anything.graincounter.lifecycle:grainkey",
+            "cli-anything-objcounter=cli_anything.objcounter.objcounter_cli:main",
+            "count=cli_anything.objcounter.objcounter_cli:main",
+            "counton=cli_anything.objcounter.lifecycle:counton",
+            "countoff=cli_anything.objcounter.lifecycle:countoff",
+            "countkey=cli_anything.objcounter.lifecycle:countkey",
         ],
     },
 )

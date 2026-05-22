@@ -1,6 +1,6 @@
-# Grain Counter — 功能测试计划
+# YOLO Object Counter — 功能测试计划
 
-> 测试环境：`grain-counter/` 项目根目录
+> 测试环境：`yolo-object-counter/` 项目根目录
 > 测试方法：Playwright 浏览器自动化 + CLI 命令 + API curl
 > 测试日期：2026-05-19
 
@@ -25,7 +25,7 @@
 ### 1.3 检测功能
 - [ ] 点击"检测"按钮发送请求
 - [ ] Enter 键触发检测
-- [ ] 检测结果显示：籽粒数量、耗时、尺寸
+- [ ] 检测结果显示：目标数量、耗时、尺寸
 - [ ] 结果图片正常显示
 - [ ] 置信度分布柱状图
 - [ ] 加载骨架屏
@@ -91,25 +91,25 @@
 
 ### 3.1 安装
 - [ ] pip install -e agent-harness/ 成功
-- [ ] grain --help 可用
-- [ ] grainon --help 可用
-- [ ] grainoff --help 可用
-- [ ] grainkey 可用
+- [ ] count --help 可用
+- [ ] counton --help 可用
+- [ ] countoff --help 可用
+- [ ] countkey 可用
 
-### 3.2 grain CLI 命令
-- [ ] grain detect <image> — 直接检测（无服务器）
-- [ ] grain server start — 启动服务器
-- [ ] grain server stop — 停止服务器
-- [ ] grain server status — 服务器状态
-- [ ] grain config show — 显示配置
-- [ ] grain config set — 修改配置
-- [ ] grain model list — 列出模型
-- [ ] grain health — 健康检查
-- [ ] grain stats — 统计信息
+### 3.2 count CLI 命令
+- [ ] count detect <image> — 直接检测（无服务器）
+- [ ] count server start — 启动服务器
+- [ ] count server stop — 停止服务器
+- [ ] count server status — 服务器状态
+- [ ] count config show — 显示配置
+- [ ] count config set — 修改配置
+- [ ] count model list — 列出模型
+- [ ] count health — 健康检查
+- [ ] count stats — 统计信息
 
 ### 3.3 一键命令
-- [ ] grainoff — 停止所有服务
-- [ ] grainkey — 显示当前 API Key
+- [ ] countoff — 停止所有服务
+- [ ] countkey — 显示当前 API Key
 
 ---
 

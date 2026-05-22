@@ -2,7 +2,7 @@
 import time
 import threading
 from collections import deque
-from graincounter.logger import get_logger
+from objcounter.logger import get_logger
 
 logger = get_logger()
 

@@ -1,1 +1,1 @@
-# CLI-Anything harness for Grain Counter (小麦籽粒检测)
+# CLI-Anything harness for YOLO Object Counter (目标检测计数)

@@ -1,8 +1,8 @@
 """在线设备追踪器 — 线程安全的设备管理 + 踢出"""
 import time
 import threading
-from graincounter.logger import get_logger
-from graincounter.user_agent import parse_user_agent, get_device_display_name
+from objcounter.logger import get_logger
+from objcounter.user_agent import parse_user_agent, get_device_display_name
 
 logger = get_logger()
 

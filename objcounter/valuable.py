@@ -4,8 +4,8 @@ import time
 import threading
 from datetime import datetime
 import cv2
-from graincounter.logger import get_logger
-from graincounter.config import get_config
+from objcounter.logger import get_logger
+from objcounter.config import get_config
 
 logger = get_logger()
 

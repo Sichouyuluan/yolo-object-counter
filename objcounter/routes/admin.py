@@ -7,13 +7,13 @@ import logging
 from fastapi import APIRouter, Request, Depends, HTTPException
 from fastapi.responses import JSONResponse
 
-from graincounter.config import get_config, set_config
-from graincounter.guard import get_guard
-from graincounter.stats import detection_stats
-from graincounter.state import app_state
-from graincounter.middleware import verify_api_key
+from objcounter.config import get_config, set_config
+from objcounter.guard import get_guard
+from objcounter.stats import detection_stats
+from objcounter.state import app_state
+from objcounter.middleware import verify_api_key
 
-logger = logging.getLogger("grain_web")
+logger = logging.getLogger("count_web")
 router = APIRouter(tags=["admin"])
 
 
@@ -56,7 +56,7 @@ async def get_api_key(_: str = Depends(verify_api_key)):
 
 @router.post("/api/key/regenerate")
 async def regenerate_api_key(_: str = Depends(verify_api_key)):
-    from graincounter.config import get_project_root
+    from objcounter.config import get_project_root
     new_key = secrets.token_urlsafe(32)
     app_state.api_key = new_key
     key_file = os.path.join(get_project_root(), ".api_key")

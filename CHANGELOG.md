@@ -1,13 +1,13 @@
 # Changelog / 更新日志
 
-All notable changes to the Grain Counter project.
+All notable changes to the YOLO Object Counter project.
 
 ---
 
 ## [4.1.0] — 2026-05-19
 
 ### Added / 新增
-- Cross-platform CLI tools: `grain`, `grainon`, `grainoff`, `grainkey` / 跨平台 CLI 工具
+- Cross-platform CLI tools: `count`, `counton`, `countoff`, `countkey` / 跨平台 CLI 工具
 - `config.local.yaml` for local config overrides / 本地配置覆盖文件
 - Cloudflared tunnel URL auto-detection from `~/.cloudflared/config.yml` / Cloudflared 隧道 URL 自动检测
 - `TEST_PLAN.md` for structured testing / 结构化测试计划
@@ -30,7 +30,7 @@ All notable changes to the Grain Counter project.
 
 ### Added / 新增
 - **Agent-Harness CLI**: pip-installable package / 可 pip 安装的 CLI 工具包
-- CLI commands: `grain`, `grainon`, `grainoff`, `grainkey`
+- CLI commands: `count`, `counton`, `countoff`, `countkey`
 - Core backends: detector, server, config, HTTP client / 核心后端模块
 - Cross-platform `start_panel.sh` / Linux/macOS 启动脚本
 - `models/.gitkeep` for preserving directory / 模型目录占位文件
@@ -83,7 +83,7 @@ All notable changes to the Grain Counter project.
 ## [2.0.0] — 2026-05-15
 
 ### Added / 新增
-- **Modular refactoring**: `graincounter/` package with separate modules / 模块化重构
+- **Modular refactoring**: `objcounter/` package with separate modules / 模块化重构
 - Route modules: admin, detect, devices, models, pages / 路由模块拆分
 - Graceful shutdown handler / 优雅退出处理
 - Config hot-reload support / 配置热加载
@@ -189,5 +189,5 @@ All notable changes to the Grain Counter project.
 ### Added / 新增
 - Initial prototype / 初始原型
 - FastAPI web server with async handling / FastAPI 异步 Web 服务
-- YOLO ONNX grain detection / YOLO ONNX 籽粒检测
+- YOLO ONNX object detection / YOLO ONNX 目标检测
 - Basic Web UI / 基础 Web 界面

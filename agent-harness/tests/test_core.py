@@ -1,7 +1,7 @@
 """Unit tests for CLI harness core backends.
 
 Run from project root:
-    python -m pytest agent-harness/cli_anything/graincounter/tests/test_core.py -v
+    python -m pytest agent-harness/cli_anything/objcounter/tests/test_core.py -v
 """
 import os
 import sys
@@ -18,13 +18,13 @@ _PROJECT_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 if _PROJECT_ROOT not in sys.path:
     sys.path.insert(0, _PROJECT_ROOT)
 
-from cli_anything.graincounter.core.detector_backend import DetectorBackend
-from cli_anything.graincounter.core.config_backend import ConfigBackend
-from cli_anything.graincounter.core.server_backend import ServerBackend
+from cli_anything.objcounter.core.detector_backend import DetectorBackend
+from cli_anything.objcounter.core.config_backend import ConfigBackend
+from cli_anything.objcounter.core.server_backend import ServerBackend
 
 
 def _create_test_image(path, size=(320, 320)):
-    """Create a small test image with some shapes (simulated grains)."""
+    """Create a small test image with some shapes (simulated objects)."""
     img = np.zeros((*size, 3), dtype=np.uint8)
     for i in range(5):
         cx, cy = 50 + i * 60, 160

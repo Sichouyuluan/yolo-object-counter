@@ -1,7 +1,7 @@
 """服务器管理面板 — UI 构建（卡片、下拉、设备行）"""
 import tkinter as tk
 import tkinter.ttk as ttk
-from graincounter.theme import Theme, glass_frame, glass_label, glass_button, glass_entry
+from objcounter.theme import Theme, glass_frame, glass_label, glass_button, glass_entry
 
 
 class PanelUI:
@@ -17,7 +17,7 @@ class PanelUI:
         tk.Frame(header, bg=Theme.border, height=1).pack(side=tk.BOTTOM, fill=tk.X)
         inner_h = tk.Frame(header, bg=Theme.surface)
         inner_h.pack(expand=True, fill=tk.BOTH, padx=16)
-        glass_label(inner_h, text="🌾  Grain Counter",
+        glass_label(inner_h, text="🔍  YOLO Object Counter",
                     font=(Theme.font, 15, "bold"),
                     fg=Theme.text, bg=Theme.surface).pack(side=tk.LEFT)
         glass_label(inner_h, text="服务器管理面板",

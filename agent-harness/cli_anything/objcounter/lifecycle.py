@@ -1,7 +1,7 @@
-"""grainon / grainoff — 一键启动/停止 Grain Counter 全栈服务.
+"""counton / countoff — 一键启动/停止 YOLO Object Counter 全栈服务.
 
-grainon: 启动管理面板 → 启动服务器 → 启动 Cloudflared 隧道
-grainoff: 停止 Cloudflared → 停止服务器 → 关闭管理面板
+counton: 启动管理面板 → 启动服务器 → 启动 Cloudflared 隧道
+countoff: 停止 Cloudflared → 停止服务器 → 关闭管理面板
 """
 import os
 import sys
@@ -55,7 +55,7 @@ def _read_pid(filepath):
     return None
 
 
-def grainkey():
+def countkey():
     """Print the current API Key."""
     key_file = os.path.join(_PROJECT_ROOT, ".api_key")
     if os.path.exists(key_file):
@@ -66,10 +66,10 @@ def grainkey():
         sys.exit(1)
 
 
-def grainon():
+def counton():
     """Start everything: panel → server → cloudflared."""
     print("═" * 50)
-    print("  Grain Counter — 一键启动 (grainon)")
+    print("  YOLO Object Counter — 一键启动 (counton)")
     print("═" * 50)
     print(f"  项目目录: {_PROJECT_ROOT}")
     print(f"  面板脚本: {PANEL_SCRIPT}")
@@ -84,7 +84,7 @@ def grainon():
         try:
             os.kill(existing_pid, 0)
             print(f"[WARN] 面板已在运行 (PID: {existing_pid})")
-            print("  请先运行 grainoff 停止服务")
+            print("  请先运行 countoff 停止服务")
             sys.exit(1)
         except OSError:
             # Stale PID file
@@ -132,10 +132,10 @@ def grainon():
     print("═" * 50)
 
 
-def grainoff():
+def countoff():
     """Stop everything: cloudflared → server → panel."""
     print("═" * 50)
-    print("  Grain Counter — 一键停止 (grainoff)")
+    print("  YOLO Object Counter — 一键停止 (countoff)")
     print("═" * 50)
 
     # 1. Stop Cloudflared
@@ -173,7 +173,7 @@ def grainoff():
         # Last resort: kill python processes running server_panel
         if sys.platform == "win32":
             result = subprocess.run(
-                ["taskkill", "/F", "/FI", "IMAGENAME eq python.exe", "/FI", "WINDOWTITLE eq Grain Counter*"],
+                ["taskkill", "/F", "/FI", "IMAGENAME eq python.exe", "/FI", "WINDOWTITLE eq YOLO Object Counter*"],
                 capture_output=True,
                 creationflags=subprocess.CREATE_NO_WINDOW,
             )
@@ -186,6 +186,6 @@ def grainoff():
 if __name__ == "__main__":
     cmd = os.path.basename(sys.argv[0]) if sys.argv else ""
     if "off" in cmd.lower() or (len(sys.argv) > 1 and sys.argv[1] == "off"):
-        grainoff()
+        countoff()
     else:
-        grainon()
+        counton()

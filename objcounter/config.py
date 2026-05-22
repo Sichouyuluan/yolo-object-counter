@@ -10,7 +10,7 @@ def get_config_path():
     global _CONFIG_PATH
     if _CONFIG_PATH is None:
         _CONFIG_PATH = os.environ.get(
-            "GRAIN_CONFIG_PATH",
+            "COUNT_CONFIG_PATH",
             os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))), "config.yaml"),
         )
     return _CONFIG_PATH
@@ -19,7 +19,7 @@ def get_config_path():
 DEFAULT_CONFIG = {
     "host": "0.0.0.0",
     "port": 8000,
-    "model_path": "models/drygrain_yolo26m_v2.onnx",
+    "model_path": "models/yolo26m_v2.onnx",
     "input_size": 640,
     "score_threshold": 0.25,
     "nms_threshold": 0.5,

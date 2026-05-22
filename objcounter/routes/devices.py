@@ -3,8 +3,8 @@ import json
 
 from fastapi import APIRouter, Request, Depends, HTTPException
 
-from graincounter.state import app_state
-from graincounter.middleware import verify_api_key
+from objcounter.state import app_state
+from objcounter.middleware import verify_api_key
 
 router = APIRouter(tags=["devices"])
 

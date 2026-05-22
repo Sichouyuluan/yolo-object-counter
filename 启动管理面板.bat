@@ -1,9 +1,9 @@
 @echo off
-chcp 65001 >nul 2>&1
+chcp 65001 >/dev/null 2>&1
 cd /d "%~dp0"
 echo.
 echo ============================================
-echo   Grain Counter - Server Management Panel
+echo   YOLO Object Counter - Server Management Panel
 echo ============================================
 echo.
 python server_panel.py

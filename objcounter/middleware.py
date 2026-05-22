@@ -5,9 +5,9 @@ import secrets
 from fastapi import Header, HTTPException, Request
 from fastapi.responses import JSONResponse
 
-from graincounter.config import get_config
-from graincounter.guard import get_guard
-from graincounter.state import app_state
+from objcounter.config import get_config
+from objcounter.guard import get_guard
+from objcounter.state import app_state
 
 
 async def verify_api_key(authorization: str = Header(None)):

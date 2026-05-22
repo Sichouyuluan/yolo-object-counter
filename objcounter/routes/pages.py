@@ -7,11 +7,11 @@ import logging
 from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import HTMLResponse
 
-from graincounter.config import get_config, set_config
-from graincounter.state import app_state
-from graincounter.middleware import verify_api_key
+from objcounter.config import get_config, set_config
+from objcounter.state import app_state
+from objcounter.middleware import verify_api_key
 
-logger = logging.getLogger("grain_web")
+logger = logging.getLogger("count_web")
 router = APIRouter(tags=["pages"])
 
 # HTML 模板懒加载
