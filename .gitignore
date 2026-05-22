@@ -60,3 +60,4 @@ all_skills.zip
 # Large model files
 models/*.onnx
 models/*.pt
+image/
