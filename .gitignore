@@ -57,6 +57,11 @@ atrouble/
 # Archive
 all_skills.zip
 
+# Internal docs (not for public repo)
+SECURITY_TEST_REPORT.md
+TEST_PLAN.md
+docs/MIMO项目描述.docx
+
 # Large model files
 models/*.onnx
 models/*.pt
