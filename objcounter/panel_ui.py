@@ -2,12 +2,16 @@
 import tkinter as tk
 import tkinter.ttk as ttk
 from objcounter.theme import Theme, glass_frame, glass_label, glass_button, glass_entry
+from objcounter.i18n import t as _t
 
 
 class PanelUI:
     """UI 构建 mixin（由 ServerPanel 继承）"""
 
     def _build_ui(self):
+        # ── i18n 标签追踪 ──
+        self._i18n_labels = {}
+
         # ── 顶部标题 ──
         header = tk.Frame(self.root, bg=Theme.surface, height=52,
                           highlightbackground=Theme.border,
@@ -20,9 +24,20 @@ class PanelUI:
         glass_label(inner_h, text="🔍  YOLO Object Counter",
                     font=(Theme.font, 15, "bold"),
                     fg=Theme.text, bg=Theme.surface).pack(side=tk.LEFT)
-        glass_label(inner_h, text="服务器管理面板",
+        lbl = glass_label(inner_h, text=_t("panel_title"),
                     font=(Theme.font, 10),
-                    fg=Theme.text_dim, bg=Theme.surface).pack(side=tk.LEFT, padx=(10, 0))
+                    fg=Theme.text_dim, bg=Theme.surface)
+        lbl.pack(side=tk.LEFT, padx=(10, 0))
+        self._i18n_labels["panel_title"] = lbl
+        # 语言切换按钮
+        self.lang_btn = tk.Button(
+            inner_h, text=_t("lang_toggle"),
+            bg=Theme.surface_alt, fg=Theme.text_dim,
+            font=(Theme.font, 9), relief="flat", bd=0,
+            padx=8, pady=2, cursor="hand2",
+            activebackground=Theme.border,
+            command=self.toggle_language)
+        self.lang_btn.pack(side=tk.RIGHT, padx=(8, 0))
 
         # ── 主体 ──
         body = tk.Frame(self.root, bg=Theme.bg)
@@ -46,9 +61,11 @@ class PanelUI:
 
         title_row = tk.Frame(card, bg=Theme.surface)
         title_row.pack(fill=tk.X, padx=12, pady=(10, 6))
-        glass_label(title_row, text="运行状态",
+        lbl = glass_label(title_row, text=_t("panel_status"),
                     font=(Theme.font, 10, "bold"),
-                    fg=Theme.text_dim, bg=Theme.surface).pack(side=tk.LEFT)
+                    fg=Theme.text_dim, bg=Theme.surface)
+        lbl.pack(side=tk.LEFT)
+        self._i18n_labels["panel_status"] = lbl
 
         status_row = tk.Frame(card, bg=Theme.surface)
         status_row.pack(fill=tk.X, padx=12, pady=(4, 10))
@@ -57,15 +74,16 @@ class PanelUI:
                                    bg=Theme.surface, fg=Theme.red,
                                    font=(Theme.font_mono, 16, "bold"))
         self.status_dot.pack(side=tk.LEFT)
-        self.status_label = glass_label(status_row, text="未运行",
+        self.status_label = glass_label(status_row, text=_t("panel_not_running"),
                                         fg=Theme.text_dim, bg=Theme.surface,
                                         font=(Theme.font, 11))
         self.status_label.pack(side=tk.LEFT, padx=(6, 0))
+        self._i18n_labels["panel_not_running"] = self.status_label
 
         tk.Frame(status_row, bg=Theme.border, width=1, height=16)\
             .pack(side=tk.LEFT, padx=(14, 10))
 
-        self.device_count_label = glass_label(status_row, text="📡 0 台设备",
+        self.device_count_label = glass_label(status_row, text=_t("panel_devices", count=0),
                                               fg=Theme.text_dim, bg=Theme.surface,
                                               font=(Theme.font, 10))
         self.device_count_label.pack(side=tk.LEFT)
@@ -78,16 +96,19 @@ class PanelUI:
 
         valuable_row = tk.Frame(card, bg=Theme.surface)
         valuable_row.pack(fill=tk.X, padx=12, pady=(0, 10))
-        glass_label(valuable_row, text="📸 优质照片:",
+        lbl = glass_label(valuable_row, text=_t("panel_valuable_photos"),
                     font=(Theme.font, 9), fg=Theme.text_dim,
-                    bg=Theme.surface).pack(side=tk.LEFT)
-        self.valuable_count_label = glass_label(valuable_row, text="0 张",
+                    bg=Theme.surface)
+        lbl.pack(side=tk.LEFT)
+        self._i18n_labels["panel_valuable_photos"] = lbl
+        self.valuable_count_label = glass_label(valuable_row, text=_t("panel_valuable_count", count=0),
                                                 font=(Theme.font, 9, "bold"),
                                                 fg=Theme.accent, bg=Theme.surface)
         self.valuable_count_label.pack(side=tk.LEFT, padx=(4, 0))
-        glass_button(valuable_row, "📂 打开", Theme.blue,
+        self.valuable_open_btn = glass_button(valuable_row, _t("panel_open"), Theme.blue,
                      self._open_valuable_dir,
-                     font=(Theme.font, 8), padx=8, pady=2).pack(side=tk.RIGHT)
+                     font=(Theme.font, 8), padx=8, pady=2)
+        self.valuable_open_btn.pack(side=tk.RIGHT)
 
     # ── 卡片 2: 快速操作 ──
 
@@ -97,24 +118,26 @@ class PanelUI:
 
         title_row = tk.Frame(card, bg=Theme.surface)
         title_row.pack(fill=tk.X, padx=12, pady=(10, 6))
-        glass_label(title_row, text="快速操作",
+        lbl = glass_label(title_row, text=_t("panel_quick_actions"),
                     font=(Theme.font, 10, "bold"),
-                    fg=Theme.text_dim, bg=Theme.surface).pack(side=tk.LEFT)
+                    fg=Theme.text_dim, bg=Theme.surface)
+        lbl.pack(side=tk.LEFT)
+        self._i18n_labels["panel_quick_actions"] = lbl
 
         btn_row = tk.Frame(card, bg=Theme.surface)
         btn_row.pack(fill=tk.X, padx=12, pady=(4, 10))
 
-        self.start_btn = glass_button(btn_row, "▶  启动", Theme.accent,
+        self.start_btn = glass_button(btn_row, _t("panel_start"), Theme.accent,
                                       self._start_server,
                                       font=(Theme.font, 10, "bold"),
                                       padx=14, pady=8, width=7)
         self.start_btn.pack(side=tk.LEFT, padx=(0, 6))
-        self.stop_btn = glass_button(btn_row, "⏹  停止", Theme.red,
+        self.stop_btn = glass_button(btn_row, _t("panel_stop"), Theme.red,
                                      self._stop_server,
                                      font=(Theme.font, 10, "bold"),
                                      padx=14, pady=8, width=7, state=tk.DISABLED)
         self.stop_btn.pack(side=tk.LEFT, padx=(0, 6))
-        self.restart_btn = glass_button(btn_row, "🔄 重启", Theme.orange,
+        self.restart_btn = glass_button(btn_row, _t("panel_restart"), Theme.orange,
                                         self._restart_server,
                                         padx=14, pady=8, width=6,
                                         state=tk.DISABLED)
@@ -122,18 +145,20 @@ class PanelUI:
 
         ts_row = tk.Frame(card, bg=Theme.surface)
         ts_row.pack(fill=tk.X, padx=12, pady=(0, 10))
-        glass_label(ts_row, text="🌐  Tailscale:",
+        lbl = glass_label(ts_row, text=_t("panel_tailscale"),
                     font=(Theme.font, 9), fg=Theme.text_dim,
-                    bg=Theme.surface).pack(side=tk.LEFT)
+                    bg=Theme.surface)
+        lbl.pack(side=tk.LEFT)
+        self._i18n_labels["panel_tailscale"] = lbl
         self.ts_status_dot = tk.Label(ts_row, text="●",
                                       bg=Theme.surface, fg=Theme.red,
                                       font=(Theme.font_mono, 10))
         self.ts_status_dot.pack(side=tk.LEFT, padx=(2, 0))
-        self.ts_stop_btn = glass_button(ts_row, "停止", Theme.border_light,
+        self.ts_stop_btn = glass_button(ts_row, _t("panel_stop_btn"), Theme.border_light,
                                         self._stop_tailscale,
                                         font=(Theme.font, 8), padx=8, pady=2)
         self.ts_stop_btn.pack(side=tk.RIGHT, padx=(0, 3))
-        self.ts_start_btn = glass_button(ts_row, "启动", Theme.blue,
+        self.ts_start_btn = glass_button(ts_row, _t("panel_start_btn"), Theme.blue,
                                          self._start_tailscale,
                                          font=(Theme.font, 8), padx=8, pady=2)
         self.ts_start_btn.pack(side=tk.RIGHT, padx=(3, 0))
@@ -141,18 +166,20 @@ class PanelUI:
         # Cloudflared 行（与 Tailscale 格式对齐）
         cf_row = tk.Frame(card, bg=Theme.surface)
         cf_row.pack(fill=tk.X, padx=12, pady=(0, 10))
-        glass_label(cf_row, text="  Cloudflared:",
+        lbl = glass_label(cf_row, text=_t("panel_cloudflared"),
                     font=(Theme.font, 9), fg=Theme.text_dim,
-                    bg=Theme.surface).pack(side=tk.LEFT)
+                    bg=Theme.surface)
+        lbl.pack(side=tk.LEFT)
+        self._i18n_labels["panel_cloudflared"] = lbl
         self.cf_status_dot = tk.Label(cf_row, text="●",
                                       bg=Theme.surface, fg=Theme.red,
                                       font=(Theme.font_mono, 10))
         self.cf_status_dot.pack(side=tk.LEFT, padx=(2, 0))
-        self.cf_stop_btn = glass_button(cf_row, "停止", Theme.border_light,
+        self.cf_stop_btn = glass_button(cf_row, _t("panel_stop_btn"), Theme.border_light,
                                         self._stop_cloudflared,
                                         font=(Theme.font, 8), padx=8, pady=2)
         self.cf_stop_btn.pack(side=tk.RIGHT, padx=(0, 3))
-        self.cf_start_btn = glass_button(cf_row, "启动", Theme.blue,
+        self.cf_start_btn = glass_button(cf_row, _t("panel_start_btn"), Theme.blue,
                                          self._start_cloudflared,
                                          font=(Theme.font, 8), padx=8, pady=2)
         self.cf_start_btn.pack(side=tk.RIGHT, padx=(3, 0))
@@ -165,9 +192,11 @@ class PanelUI:
 
         title_row = tk.Frame(card, bg=Theme.surface)
         title_row.pack(fill=tk.X, padx=12, pady=(10, 6))
-        glass_label(title_row, text="访问地址",
+        lbl = glass_label(title_row, text=_t("panel_addresses"),
                     font=(Theme.font, 10, "bold"),
-                    fg=Theme.text_dim, bg=Theme.surface).pack(side=tk.LEFT)
+                    fg=Theme.text_dim, bg=Theme.surface)
+        lbl.pack(side=tk.LEFT)
+        self._i18n_labels["panel_addresses"] = lbl
 
         addr_frame = tk.Frame(card, bg=Theme.surface)
         addr_frame.pack(fill=tk.X, padx=12, pady=(4, 10))
@@ -178,9 +207,10 @@ class PanelUI:
             dot = tk.Label(row, text="●", bg=Theme.surface,
                            fg=dot_color, font=(Theme.font_mono, 8))
             dot.pack(side=tk.LEFT, padx=(0, 4))
-            glass_label(row, text=f"{icon} {label_text}",
+            lbl = glass_label(row, text=f"{icon} {label_text}",
                         font=(Theme.font, 8), fg=Theme.text_dim,
-                        width=label_width, anchor="w", bg=Theme.surface).pack(side=tk.LEFT)
+                        width=label_width, anchor="w", bg=Theme.surface)
+            lbl.pack(side=tk.LEFT)
             entry = tk.Entry(row, textvariable=var,
                              bg=Theme.surface_alt, fg=dot_color,
                              font=(Theme.font_mono, 9),
@@ -199,21 +229,23 @@ class PanelUI:
                       font=(Theme.font, 8), relief="flat", bd=0,
                       padx=4, pady=1, cursor="hand2",
                       activebackground=Theme.border).pack(side=tk.LEFT)
-            return dot, entry
+            return dot, entry, lbl
 
-        self.local_url_var = tk.StringVar(value="http://-- 未启动 --")
-        self.lan_url_var = tk.StringVar(value="http://-- 未启动 --")
-        self.ts_url_var = tk.StringVar(value="检测中...")
+        self.local_url_var = tk.StringVar(value=_t("panel_not_started"))
+        self.lan_url_var = tk.StringVar(value=_t("panel_not_started"))
+        self.ts_url_var = tk.StringVar(value=_t("panel_checking"))
 
-        self.local_dot, _ = make_addr_row(addr_frame, "💻", "本机",
+        self.local_dot, _, addr_lbl = make_addr_row(addr_frame, "💻", _t("panel_local"),
                                           self.local_url_var, Theme.accent)
-        self.lan_dot, _ = make_addr_row(addr_frame, "📱", "局域网",
+        self._i18n_labels["panel_local"] = addr_lbl
+        self.lan_dot, _, addr_lbl = make_addr_row(addr_frame, "📱", _t("panel_lan"),
                                         self.lan_url_var, Theme.accent)
-        _, self.ts_entry = make_addr_row(addr_frame, "🌐", "Tailscale",
+        self._i18n_labels["panel_lan"] = addr_lbl
+        _, self.ts_entry, _ = make_addr_row(addr_frame, "🌐", "Tailscale",
                                          self.ts_url_var, "#facc15")
-        self.cf_url_var = tk.StringVar(value="检测中...")
+        self.cf_url_var = tk.StringVar(value=_t("panel_checking"))
         self._cf_tunnel_url = ""  # 从 config.yaml 或 cloudflared 日志动态获取
-        self.cf_address_dot, self.cf_entry = make_addr_row(addr_frame, "  ", "Cloudflared",
+        self.cf_address_dot, self.cf_entry, _ = make_addr_row(addr_frame, "  ", "Cloudflared",
                                                            self.cf_url_var, "#facc15")
 
     # ── 卡片 4: 配置 ──
@@ -225,32 +257,40 @@ class PanelUI:
 
         title_row = tk.Frame(card, bg=Theme.surface)
         title_row.pack(fill=tk.X, padx=12, pady=(8, 4))
-        glass_label(title_row, text="配置",
+        lbl = glass_label(title_row, text=_t("panel_config"),
                     font=(Theme.font, 10, "bold"),
-                    fg=Theme.text_dim, bg=Theme.surface).pack(side=tk.LEFT)
+                    fg=Theme.text_dim, bg=Theme.surface)
+        lbl.pack(side=tk.LEFT)
+        self._i18n_labels["panel_config"] = lbl
 
         row = tk.Frame(card, bg=Theme.surface)
         row.pack(fill=tk.X, padx=12, pady=(2, 8))
 
         # 端口
-        glass_label(row, text="端口:", font=(Theme.font, 9),
-                    fg=Theme.text_dim, bg=Theme.surface).pack(side=tk.LEFT)
+        lbl = glass_label(row, text=_t("panel_port"), font=(Theme.font, 9),
+                    fg=Theme.text_dim, bg=Theme.surface)
+        lbl.pack(side=tk.LEFT)
+        self._i18n_labels["panel_port"] = lbl
         port_entry = glass_entry(row, var=self.port_var, width=6,
                                  font=(Theme.font_mono, 10))
         port_entry.pack(side=tk.LEFT, padx=(4, 16))
         self.port_var.trace_add("write", lambda *a: self._on_port_changed())
 
         # API 认证
-        glass_label(row, text="API 认证:", font=(Theme.font, 9),
-                    fg=Theme.text_dim, bg=Theme.surface).pack(side=tk.LEFT)
+        lbl = glass_label(row, text=_t("panel_auth"), font=(Theme.font, 9),
+                    fg=Theme.text_dim, bg=Theme.surface)
+        lbl.pack(side=tk.LEFT)
+        self._i18n_labels["panel_auth"] = lbl
         tk.Checkbutton(row, variable=self.auth_var, bg=Theme.surface, fg=Theme.text,
                        selectcolor=Theme.surface, activebackground=Theme.surface,
                        activeforeground=Theme.text, highlightthickness=0,
                        command=self._on_auth_changed).pack(side=tk.LEFT, padx=4)
 
         # 自定义 Key
-        glass_label(row, text="Key:", font=(Theme.font, 9),
-                    fg=Theme.text_dim, bg=Theme.surface).pack(side=tk.LEFT, padx=(12, 0))
+        lbl = glass_label(row, text=_t("panel_key"), font=(Theme.font, 9),
+                    fg=Theme.text_dim, bg=Theme.surface)
+        lbl.pack(side=tk.LEFT, padx=(12, 0))
+        self._i18n_labels["panel_key"] = lbl
         tk.Button(row, text="🔄", command=self._regenerate_api_key,
                   bg=Theme.surface_alt, fg=Theme.text_dim,
                   font=(Theme.font, 8), relief="flat", bd=0,
@@ -273,8 +313,10 @@ class PanelUI:
                        selectcolor=Theme.surface, activebackground=Theme.surface,
                        activeforeground=Theme.text, highlightthickness=0,
                        font=(Theme.font, 8)).pack(side=tk.LEFT)
-        glass_label(row, text="隐藏轮询", font=(Theme.font, 8),
-                    fg=Theme.text_dim, bg=Theme.surface).pack(side=tk.LEFT)
+        lbl = glass_label(row, text=_t("panel_hide_poll"), font=(Theme.font, 8),
+                    fg=Theme.text_dim, bg=Theme.surface)
+        lbl.pack(side=tk.LEFT)
+        self._i18n_labels["panel_hide_poll"] = lbl
 
         # 跟随滚动
         glass_label(row, text="", bg=Theme.surface, width=1).pack(side=tk.LEFT)
@@ -283,22 +325,27 @@ class PanelUI:
                        selectcolor=Theme.surface, activebackground=Theme.surface,
                        activeforeground=Theme.text, highlightthickness=0,
                        font=(Theme.font, 8)).pack(side=tk.LEFT)
-        glass_label(row, text="跟随滚动", font=(Theme.font, 8),
-                    fg=Theme.text_dim, bg=Theme.surface).pack(side=tk.LEFT)
+        lbl = glass_label(row, text=_t("panel_follow_scroll"), font=(Theme.font, 8),
+                    fg=Theme.text_dim, bg=Theme.surface)
+        lbl.pack(side=tk.LEFT)
+        self._i18n_labels["panel_follow_scroll"] = lbl
 
         # 模型选择 + 预热状态 — 第二行
         row2 = tk.Frame(card, bg=Theme.surface)
         row2.pack(fill=tk.X, padx=12, pady=(0, 8))
 
-        glass_label(row2, text="模型:", font=(Theme.font, 9),
-                    fg=Theme.text_dim, bg=Theme.surface).pack(side=tk.LEFT)
-        self.model_var = tk.StringVar(value="加载中...")
+        lbl = glass_label(row2, text=_t("panel_model"), font=(Theme.font, 9),
+                    fg=Theme.text_dim, bg=Theme.surface)
+        lbl.pack(side=tk.LEFT)
+        self._i18n_labels["panel_model"] = lbl
+        self.model_var = tk.StringVar(value=_t("panel_loading"))
         self.model_menu = ttk.Combobox(row2, textvariable=self.model_var,
                                        state="readonly", width=26)
         self.model_menu.pack(side=tk.LEFT, padx=(4, 6))
 
-        glass_button(row2, "切换", Theme.blue, self._switch_model,
-                     font=(Theme.font, 8), padx=8, pady=2).pack(side=tk.LEFT)
+        self.model_switch_btn = glass_button(row2, _t("panel_switch"), Theme.blue, self._switch_model,
+                     font=(Theme.font, 8), padx=8, pady=2)
+        self.model_switch_btn.pack(side=tk.LEFT)
         glass_button(row2, "📂", Theme.surface_alt, self._open_models_dir,
                      font=(Theme.font, 8), padx=6, pady=2,
                      fg=Theme.text_dim).pack(side=tk.LEFT, padx=(4, 0))
@@ -308,9 +355,11 @@ class PanelUI:
 
         glass_label(row2, text="|", font=(Theme.font, 8),
                     fg=Theme.border_light, bg=Theme.surface).pack(side=tk.LEFT, padx=(10, 0))
-        glass_label(row2, text="预热:", font=(Theme.font, 8),
-                    fg=Theme.text_dim, bg=Theme.surface).pack(side=tk.LEFT)
-        self.warm_status_label = glass_label(row2, text="无",
+        lbl = glass_label(row2, text=_t("panel_warmup"), font=(Theme.font, 8),
+                    fg=Theme.text_dim, bg=Theme.surface)
+        lbl.pack(side=tk.LEFT)
+        self._i18n_labels["panel_warmup"] = lbl
+        self.warm_status_label = glass_label(row2, text=_t("panel_none"),
                                              font=(Theme.font, 8),
                                              fg=Theme.text_dim, bg=Theme.surface)
         self.warm_status_label.pack(side=tk.LEFT, padx=(4, 0))
@@ -319,16 +368,18 @@ class PanelUI:
         row3 = tk.Frame(card, bg=Theme.surface)
         row3.pack(fill=tk.X, padx=12, pady=(0, 8))
 
-        glass_label(row3, text="运行:", font=(Theme.font, 8),
-                    fg=Theme.text_dim, bg=Theme.surface).pack(side=tk.LEFT)
-        self.error_label = glass_label(row3, text="错误0", font=(Theme.font, 8),
+        lbl = glass_label(row3, text=_t("panel_runtime"), font=(Theme.font, 8),
+                    fg=Theme.text_dim, bg=Theme.surface)
+        lbl.pack(side=tk.LEFT)
+        self._i18n_labels["panel_runtime"] = lbl
+        self.error_label = glass_label(row3, text=_t("panel_errors", count=0), font=(Theme.font, 8),
                                         fg=Theme.red, bg=Theme.surface)
         self.error_label.pack(side=tk.LEFT, padx=(4, 8))
 
         glass_label(row3, text="|", font=(Theme.font, 8),
                     fg=Theme.border_light, bg=Theme.surface).pack(side=tk.LEFT)
 
-        self.detect_label = glass_label(row3, text="检测0次", font=(Theme.font, 8),
+        self.detect_label = glass_label(row3, text=_t("panel_detections", count=0), font=(Theme.font, 8),
                                          fg=Theme.accent, bg=Theme.surface)
         self.detect_label.pack(side=tk.LEFT, padx=(8, 0))
 
@@ -341,8 +392,10 @@ class PanelUI:
                     fg=Theme.border_light, bg=Theme.surface).pack(side=tk.LEFT, padx=(8, 4))
         # 路径阈值
         self.path_threshold_var = tk.StringVar(value="15")
-        glass_label(row3, text="异常路径≥", font=(Theme.font, 7),
-                    fg=Theme.text_dim, bg=Theme.surface).pack(side=tk.LEFT)
+        lbl = glass_label(row3, text=_t("panel_path_threshold"), font=(Theme.font, 7),
+                    fg=Theme.text_dim, bg=Theme.surface)
+        lbl.pack(side=tk.LEFT)
+        self._i18n_labels["panel_path_threshold"] = lbl
         tk.Entry(row3, textvariable=self.path_threshold_var, width=3,
                  bg=Theme.surface_alt, fg=Theme.text, font=(Theme.font_mono, 9),
                  relief="flat", bd=0, highlightbackground=Theme.border,
@@ -350,8 +403,10 @@ class PanelUI:
         self.path_threshold_var.trace_add("write", lambda *a: self._on_scan_config_changed())
         # 洪泛阈值
         self.flood_threshold_var = tk.StringVar(value="50")
-        glass_label(row3, text="异常总数≥", font=(Theme.font, 7),
-                    fg=Theme.text_dim, bg=Theme.surface).pack(side=tk.LEFT)
+        lbl = glass_label(row3, text=_t("panel_flood_threshold"), font=(Theme.font, 7),
+                    fg=Theme.text_dim, bg=Theme.surface)
+        lbl.pack(side=tk.LEFT)
+        self._i18n_labels["panel_flood_threshold"] = lbl
         tk.Entry(row3, textvariable=self.flood_threshold_var, width=3,
                  bg=Theme.surface_alt, fg=Theme.text, font=(Theme.font_mono, 9),
                  relief="flat", bd=0, highlightbackground=Theme.border,
@@ -359,8 +414,10 @@ class PanelUI:
         self.flood_threshold_var.trace_add("write", lambda *a: self._on_scan_config_changed())
         # 保护分钟
         self.protect_seconds_var = tk.StringVar(value="180")
-        glass_label(row3, text="保护秒", font=(Theme.font, 7),
-                    fg=Theme.text_dim, bg=Theme.surface).pack(side=tk.LEFT)
+        lbl = glass_label(row3, text=_t("panel_protect_seconds"), font=(Theme.font, 7),
+                    fg=Theme.text_dim, bg=Theme.surface)
+        lbl.pack(side=tk.LEFT)
+        self._i18n_labels["panel_protect_seconds"] = lbl
         tk.Entry(row3, textvariable=self.protect_seconds_var, width=3,
                  bg=Theme.surface_alt, fg=Theme.text, font=(Theme.font_mono, 9),
                  relief="flat", bd=0, highlightbackground=Theme.border,
@@ -368,15 +425,17 @@ class PanelUI:
         self.protect_seconds_var.trace_add("write", lambda *a: self._on_scan_config_changed())
         # 自停次数
         self.stop_after_var = tk.StringVar(value="5")
-        glass_label(row3, text="自停≥", font=(Theme.font, 7),
-                    fg=Theme.text_dim, bg=Theme.surface).pack(side=tk.LEFT)
+        lbl = glass_label(row3, text=_t("panel_stop_after"), font=(Theme.font, 7),
+                    fg=Theme.text_dim, bg=Theme.surface)
+        lbl.pack(side=tk.LEFT)
+        self._i18n_labels["panel_stop_after"] = lbl
         tk.Entry(row3, textvariable=self.stop_after_var, width=2,
                  bg=Theme.surface_alt, fg=Theme.text, font=(Theme.font_mono, 9),
                  relief="flat", bd=0, highlightbackground=Theme.border,
                  highlightthickness=1).pack(side=tk.LEFT, padx=(1, 5))
         self.stop_after_var.trace_add("write", lambda *a: self._on_scan_config_changed())
         # 触发次数只读
-        self.guard_label = glass_label(row3, text="触发0次", font=(Theme.font, 8),
+        self.guard_label = glass_label(row3, text=_t("panel_guard_triggered", count=0), font=(Theme.font, 8),
                                        fg=Theme.orange, bg=Theme.surface)
         self.guard_label.pack(side=tk.LEFT, padx=(4, 0))
         # 恢复默认按钮
@@ -395,12 +454,16 @@ class PanelUI:
 
         title_row = tk.Frame(card, bg=Theme.surface)
         title_row.pack(fill=tk.X, padx=12, pady=(8, 4))
-        glass_label(title_row, text="服务器日志",
+        lbl = glass_label(title_row, text=_t("panel_server_log"),
                     font=(Theme.font, 10, "bold"),
-                    fg=Theme.text_dim, bg=Theme.surface).pack(side=tk.LEFT)
+                    fg=Theme.text_dim, bg=Theme.surface)
+        lbl.pack(side=tk.LEFT)
+        self._i18n_labels["panel_server_log"] = lbl
 
-        glass_label(title_row, text=" 过滤:", font=(Theme.font, 8),
-                    fg=Theme.text_dim, bg=Theme.surface).pack(side=tk.RIGHT, padx=(0, 4))
+        lbl = glass_label(title_row, text=_t("panel_filter"), font=(Theme.font, 8),
+                    fg=Theme.text_dim, bg=Theme.surface)
+        lbl.pack(side=tk.RIGHT, padx=(0, 4))
+        self._i18n_labels["panel_filter"] = lbl
         filter_menu = tk.OptionMenu(title_row, self.log_filter_var,
                                     "全部", "INFO", "WARNING", "ERROR", "SUCCESS", "SAVE", "CLOUDFLARE",
                                     command=self._on_log_filter_changed)
@@ -414,19 +477,22 @@ class PanelUI:
         self.key_frame = tk.Frame(card, bg=Theme.surface)
         key_row = tk.Frame(self.key_frame, bg=Theme.surface)
         key_row.pack(fill=tk.X, padx=12, pady=(0, 4))
-        glass_label(key_row, text="🔑 当前 Key:",
+        lbl = glass_label(key_row, text=_t("panel_current_key"),
                     font=(Theme.font, 9), fg=Theme.text_dim,
-                    bg=Theme.surface, width=10, anchor="w").pack(side=tk.LEFT)
+                    bg=Theme.surface, width=10, anchor="w")
+        lbl.pack(side=tk.LEFT)
+        self._i18n_labels["panel_current_key"] = lbl
         self.key_var = tk.StringVar(value="--")
         key_entry = glass_entry(key_row, var=self.key_var,
                                 state="readonly", readonlybackground=Theme.surface_alt,
                                 font=(Theme.font_mono, 9))
         key_entry.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(0, 4))
-        glass_button(key_row, "📋 复制",
+        self.key_copy_btn = glass_button(key_row, _t("panel_copy"),
                      Theme.surface_alt, lambda: self._copy_url(self.key_var),
                      font=(Theme.font, 8), padx=8, pady=1,
                      fg=Theme.text_dim,
-                     activeforeground=Theme.text).pack(side=tk.LEFT)
+                     activeforeground=Theme.text)
+        self.key_copy_btn.pack(side=tk.LEFT)
 
         log_outer = tk.Frame(card, bg=Theme.bg)
         log_outer.pack(fill=tk.BOTH, expand=True, padx=12, pady=(4, 10))
@@ -449,6 +515,69 @@ class PanelUI:
                            ("ERROR", Theme.red), ("SUCCESS", Theme.blue),
                            ("SAVE", "#fb923c"), ("CLOUDFLARE", "#60a5fa")]:
             self.log_text.tag_config(tag, foreground=color)
+
+    # ── 语言切换 ──
+
+    def update_panel_language(self):
+        """更新所有面板标签文本为当前语言"""
+        _key_map = {
+            "panel_status": "panel_status",
+            "panel_not_running": "panel_not_running",
+            "panel_quick_actions": "panel_quick_actions",
+            "panel_tailscale": "panel_tailscale",
+            "panel_cloudflared": "panel_cloudflared",
+            "panel_addresses": "panel_addresses",
+            "panel_local": "panel_local",
+            "panel_lan": "panel_lan",
+            "panel_config": "panel_config",
+            "panel_port": "panel_port",
+            "panel_auth": "panel_auth",
+            "panel_key": "panel_key",
+            "panel_hide_poll": "panel_hide_poll",
+            "panel_follow_scroll": "panel_follow_scroll",
+            "panel_model": "panel_model",
+            "panel_warmup": "panel_warmup",
+            "panel_runtime": "panel_runtime",
+            "panel_path_threshold": "panel_path_threshold",
+            "panel_flood_threshold": "panel_flood_threshold",
+            "panel_protect_seconds": "panel_protect_seconds",
+            "panel_stop_after": "panel_stop_after",
+            "panel_server_log": "panel_server_log",
+            "panel_filter": "panel_filter",
+            "panel_current_key": "panel_current_key",
+            "panel_valuable_photos": "panel_valuable_photos",
+            "panel_title": "panel_title",
+        }
+        for attr_key, i18n_key in _key_map.items():
+            lbl = self._i18n_labels.get(attr_key)
+            if lbl:
+                try:
+                    lbl.config(text=_t(i18n_key))
+                except Exception:
+                    pass
+        # 按钮文本
+        self.lang_btn.config(text=_t("lang_toggle"))
+        self.start_btn.config(text=_t("panel_start"))
+        self.stop_btn.config(text=_t("panel_stop"))
+        self.restart_btn.config(text=_t("panel_restart"))
+        self.ts_start_btn.config(text=_t("panel_start_btn"))
+        self.ts_stop_btn.config(text=_t("panel_stop_btn"))
+        self.cf_start_btn.config(text=_t("panel_start_btn"))
+        self.cf_stop_btn.config(text=_t("panel_stop_btn"))
+        self.model_switch_btn.config(text=_t("panel_switch"))
+        self.key_copy_btn.config(text=_t("panel_copy"))
+        self.valuable_open_btn.config(text=_t("panel_open"))
+        # 状态文本（仅在未运行时更新）
+        if not self.server_running:
+            self.status_label.config(text=_t("panel_not_running"))
+            self.local_url_var.set(_t("panel_not_started"))
+            self.lan_url_var.set(_t("panel_not_started"))
+        self.device_count_label.config(text=_t("panel_devices", count=self._device_count))
+        self.valuable_count_label.config(text=_t("panel_valuable_count", count=self._valuable_count))
+        self.warm_status_label.config(text=_t("panel_none"))
+        self.error_label.config(text=_t("panel_errors", count=0))
+        self.detect_label.config(text=_t("panel_detections", count=0))
+        self.guard_label.config(text=_t("panel_guard_triggered", count=0))
 
     # ── 设备下拉 ──
 

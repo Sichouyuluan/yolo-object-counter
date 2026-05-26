@@ -160,7 +160,7 @@ details.adv-settings .slider-group{padding:0 1rem 0.875rem}
   <span class="text-2xl">🔍</span>
   <h1 class="text-lg font-semibold" data-i18n="title">目标检测计数</h1>
   <span class="bg-accent text-black text-xs font-bold px-2.5 py-0.5 rounded-full">YOLOv8</span>
-  <button id="langBtn" onclick="toggleLang()" class="ml-auto cursor-pointer bg-surf-card border border-surf-border rounded-full px-2.5 py-1 text-xs text-dim hover:text-white hover:border-accent/50 transition-colors" title="Switch language">中文</button>
+  <button id="langBtn" onclick="toggleLang()" class="ml-auto cursor-pointer bg-surf-card border border-surf-border rounded-full px-2.5 py-1 text-xs text-dim hover:text-white hover:border-accent/50 transition-colors" title="Language / 语言">🌐 中文</button>
   <div class="flex items-center gap-2 bg-surf-card border border-surf-border rounded-full px-3 py-1.5 text-xs">
     <span id="connDot" class="w-2.5 h-2.5 rounded-full bg-warn shadow-[0_0_6px_#facc15]"></span>
     <span id="connText" class="text-dim">检测中...</span>
@@ -354,7 +354,7 @@ zh:{
   conf_threshold:"置信度阈值 (Confidence)",iou_threshold:"IoU 阈值 (覆盖度)",
   model_file:"模型文件",model_loading:"加载中...",
   zoom_close:"关闭 (ESC)",zoom_out:"缩小",zoom_in:"放大",zoom_fit:"适应窗口",zoom_max:"最大缩放",
-  lang_toggle:"中文",
+  lang_toggle:"🌐 中文",
   connected:"已连接",disconnected:"未连接",checking:"检测中...",
   key_saved:"✅ Key 已保存",key_input_first:"请输入 API Key",key_saved_toast:"API Key 已保存",
   please_select_image:"请先选择图片",please_enter_key:"请先输入 API Key",
@@ -390,7 +390,7 @@ en:{
   conf_threshold:"Confidence Threshold",iou_threshold:"IoU Threshold (Overlap)",
   model_file:"Model File",model_loading:"Loading...",
   zoom_close:"Close (ESC)",zoom_out:"Zoom Out",zoom_in:"Zoom In",zoom_fit:"Fit Window",zoom_max:"Max Zoom",
-  lang_toggle:"EN",
+  lang_toggle:"🌐 EN",
   connected:"Connected",disconnected:"Disconnected",checking:"Checking...",
   key_saved:"✅ Key saved",key_input_first:"Please enter API Key",key_saved_toast:"API Key saved",
   please_select_image:"Please select an image first",please_enter_key:"Please enter API Key first",
@@ -567,6 +567,7 @@ function toast(msg,type){
 // ============================================================
 // 从后端读取配置
 var maxUploadMB = 10;
+applyTranslations(); // apply default zh immediately to avoid flash
 fetch('/api/config').then(function(r){return r.json()}).then(function(c){
   maxUploadMB = c.max_upload_mb || 10;
   if(c.auth_enabled === false){authDisabled = true;}

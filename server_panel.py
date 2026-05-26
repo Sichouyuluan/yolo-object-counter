@@ -19,6 +19,7 @@ from tkinter import messagebox
 from objcounter.theme import Theme
 from objcounter.panel_ui import PanelUI
 from objcounter.panel_controls import PanelControls
+from objcounter.i18n import t as _t
 
 
 class ServerPanel(PanelUI, PanelControls):
@@ -269,7 +270,7 @@ class ServerPanel(PanelUI, PanelControls):
         self.status_dot.config(fg=dot_c)
         self.local_dot.config(fg=dot_c)
         self.lan_dot.config(fg=dot_c)
-        self.status_label.config(text="运行中" if running else "未运行",
+        self.status_label.config(text=_t("panel_running") if running else _t("panel_not_running"),
                                  fg=green if running else Theme.text_dim)
 
         self.start_btn.config(state=tk.DISABLED if running else tk.NORMAL)
@@ -280,8 +281,8 @@ class ServerPanel(PanelUI, PanelControls):
             self._update_urls()
             self.root.after(1500, self._fetch_api_key)  # 来自 PanelControls
         else:
-            self.local_url_var.set("http://-- 未启动 --")
-            self.lan_url_var.set("http://-- 未启动 --")
+            self.local_url_var.set(_t("panel_not_started"))
+            self.lan_url_var.set(_t("panel_not_started"))
             if self.tailscale_ip:
                 self.ts_url_var.set(f"http://{self.tailscale_ip}:{self.port_var.get()}")
             self._safe_pack_forget(self.key_frame)

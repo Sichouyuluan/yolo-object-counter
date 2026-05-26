@@ -10,6 +10,7 @@ import urllib.request
 import yaml
 
 from objcounter.theme import Theme
+from objcounter.i18n import t as _t, set_config as _set_config
 
 
 class PanelControls:
@@ -65,6 +66,17 @@ class PanelControls:
             self._poll_failures[key] = 0
         else:
             self._poll_failures[key] = self._poll_failures.get(key, 0) + 1
+
+    # ── 语言切换 ──
+
+    def toggle_language(self):
+        """切换面板语言（zh <-> en）并持久化"""
+        from objcounter.config import get_config
+        current = get_config("language", "zh")
+        new_lang = "en" if current == "zh" else "zh"
+        _set_config("language", new_lang, persist=True)
+        self.update_panel_language()
+        self._log(f"Language: {new_lang}", "INFO")
 
     # ── 服务器控制 ──
 
@@ -209,7 +221,7 @@ class PanelControls:
 
     def _update_device_count(self, count):
         self._device_count = count
-        self.device_count_label.config(text=f"📡 {count} 台设备")
+        self.device_count_label.config(text=_t("panel_devices", count=count))
 
     def _start_device_loop(self):
         self._refresh_online_devices()
@@ -471,7 +483,7 @@ class PanelControls:
 
     def _update_valuable_count(self, count):
         self._valuable_count = count
-        self.valuable_count_label.config(text=f"{count} 张")
+        self.valuable_count_label.config(text=_t("panel_valuable_count", count=count))
 
     def _poll_runtime_stats(self):
         """拉取 runtime stats 更新面板状态（带退避 + API Key）"""
@@ -493,13 +505,13 @@ class PanelControls:
     def _update_runtime_labels(self, stats, guard_stats):
         # 扫描攻击
         pc = guard_stats.get("protection_count", 0)
-        self.guard_label.config(text=f"触发{pc}次", fg=Theme.red if pc > 0 else Theme.orange)
+        self.guard_label.config(text=_t("panel_guard_triggered", count=pc), fg=Theme.red if pc > 0 else Theme.orange)
         # 检测次数
         dt = stats.get("today", 0)
-        self.detect_label.config(text=f"检测{dt}次")
+        self.detect_label.config(text=_t("panel_detections", count=dt))
         # 错误
         err = stats.get("errors", 0)
-        self.error_label.config(text=f"错误{err}", fg=Theme.red if err > 0 else Theme.text_dim)
+        self.error_label.config(text=_t("panel_errors", count=err), fg=Theme.red if err > 0 else Theme.text_dim)
 
     def _open_valuable_dir(self):
         vdir = os.path.join(self.project_dir, "Valuable photos")
