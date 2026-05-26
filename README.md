@@ -1,8 +1,8 @@
-# 🔍 YOLO Object Counter — 通用小物体检测计数系统
+# 🔍 YOLO Object Counter
+
+🌐 **[English](README_EN.md)**
 
 基于 YOLO ONNX 的通用小物体自动检测与计数 Web 服务。支持手机/平板/桌面浏览器访问，提供 CLI 命令行工具供 AI Agent 调用。
-
-> A YOLO-based generic small object detection and counting system. Accessible via browser (mobile/tablet/desktop), with CLI tools for AI Agent integration.
 
 ---
 
@@ -23,8 +23,7 @@ python server_panel.py
 # 5. 或直接启动 Web 服务器
 python web_server.py --port 8000
 
-# 6. 浏览器打开
-# http://localhost:8000
+# 6. 浏览器打开 http://localhost:8000
 ```
 
 首次启动会自动生成 API Key，在管理面板或终端可以看到。
@@ -35,9 +34,7 @@ python web_server.py --port 8000
 
 模型文件未包含在 Git 仓库中。将 `.onnx` 模型文件放入 `models/` 目录即可。
 
-**支持的模型格式**：YOLO ONNX（YOLOv8/v9/v10/v11/v12/26m 等通用 YOLO 导出格式均可使用）。理论上所有 Ultralytics YOLO 系列导出的 ONNX 模型都支持，只需输入/输出张量格式兼容即可。
-
-推荐模型：`yolo26m_v2.onnx`
+**支持的模型格式**：YOLO ONNX（YOLOv8/v9/v10/v11/v12/26m 等通用 YOLO 导出格式均可使用）。推荐模型：`yolo26m_v2.onnx`
 
 ---
 
@@ -47,77 +44,12 @@ python web_server.py --port 8000
 
 ```bash
 python server_panel.py
+python server_panel.py --auto-start  # 启动面板同时自动启动服务器
 ```
 
-管理面板是面向新手的可视化管理界面，提供一键启停、配置管理、实时监控等功能。
+管理面板提供一键启停、配置管理、实时监控、模型切换、在线设备管理等功能。
 
 ![管理面板](docs/服务器GUI页面.png)
-
-#### 面板界面详解
-
-面板从上到下分为以下几个区域：
-
-**① 顶部状态栏**
-- **标题栏**：显示 "YOLO Object Counter — 服务器管理面板"
-- **状态指示灯**：绿色 = 服务器运行中，红色 = 未运行
-- **服务器状态文字**：显示"运行中"或"未运行"
-
-**② 服务器控制区**
-- **启动按钮** — 启动 Web 服务器（服务器停止时可用）
-- **停止按钮** — 停止 Web 服务器（服务器运行时可用）
-- **重启按钮** — 重启 Web 服务器（服务器运行时可用）
-
-**③ 访问地址区**
-- **本地地址**：`http://localhost:8000`，带复制和打开按钮
-- **局域网地址**：`http://192.168.x.x:8000`，同局域网其他设备可用
-- **Tailscale 地址**：VPN 内网地址（需安装 Tailscale）
-- **Cloudflared 地址**：公网隧道地址（需配置 Cloudflared）
-- 每个地址右侧都有 📋 复制按钮和 🔗 打开按钮
-
-**④ API Key 管理区**
-- **Key 显示框**：显示当前 API Key（可编辑）
-- **复制按钮**：一键复制 Key 到剪贴板
-- **重新生成按钮**：生成新的 API Key（旧 Key 立即失效）
-- **认证开关**：勾选启用 API Key 认证，取消勾选关闭认证（调试用）
-
-**⑤ 端口配置区**
-- **端口输入框**：修改服务器端口（默认 8000）
-- 修改后需重启服务器生效
-
-**⑥ 模型选择区**
-- **模型下拉框**：自动扫描 `models/` 目录下的所有 `.onnx` 文件
-- 选择后即时切换模型，无需重启服务器
-
-**⑦ 在线设备区**
-- **设备计数**：显示当前连接的设备数量
-- **设备列表**：点击展开，显示每个设备的 IP、User-Agent、最后活跃时间
-- **踢出按钮**：可将指定设备踢出（需启用认证）
-
-**⑧ 远程访问状态**
-- **Cloudflared 状态**：检测 cloudflared 是否安装、隧道是否配置
-- **Tailscale 状态**：检测 tailscale 是否在线、显示 Tailscale IP
-- **启动/停止按钮**：直接在面板内控制隧道
-
-**⑨ 优质照片统计**
-- **已保存计数**：显示收集的低置信度样本数量
-- **开关**：启用/禁用自动保存低置信度图片
-- **打开目录按钮**：直接打开 `Valuable photos/` 文件夹
-- **重置计数**：清零已保存计数
-
-**⑩ 日志面板**
-- **实时日志**：显示服务器运行日志（请求、检测、错误等）
-- **日志过滤**：下拉选择"全部"/"INFO"/"WARNING"/"ERROR"/"SUCCESS"
-- **自动滚动**：勾选后日志自动滚动到最新
-- **隐藏轮询**：勾选后过滤掉心跳检测等高频日志
-
-#### 面板启动参数
-
-```bash
-python server_panel.py              # 正常启动
-python server_panel.py --auto-start # 启动面板同时自动启动服务器 + Cloudflared
-```
-
----
 
 ### 方式二：命令行（CLI）
 
@@ -129,152 +61,38 @@ countoff    # 一键停止全栈
 countkey    # 查看当前 API Key
 ```
 
-#### count 子命令
-
 ```bash
-# 直接检测图片（不需要启动服务器）
-count detect image.jpg
-
-# 批量检测
-count detect img1.jpg img2.jpg img3.jpg
-
-# 服务器管理
-count server start      # 启动 Web 服务器
-count server stop       # 停止 Web 服务器
-count server status     # 查看服务器状态
-
-# 配置管理
-count config show       # 查看当前配置
-count config set port 8080   # 修改端口
-count config set score_threshold 0.3  # 修改置信度阈值
-
-# 模型管理
-count model list        # 列出可用模型
-count model switch yolo26m_v2.onnx  # 切换模型
-
-# 健康检查与统计
-count health            # 服务器健康状态
-count stats             # 检测统计（次数、平均耗时、错误数）
-count key show          # 显示 API Key
-count key regenerate    # 重新生成 API Key
+count detect image.jpg           # 直接检测图片
+count server start               # 启动 Web 服务器
+count config show                # 查看当前配置
+count model list                 # 列出可用模型
+count health                     # 服务器健康状态
 ```
-
-#### 一键命令
-
-```bash
-counton    # 依次启动：管理面板 → Web 服务器 → Cloudflared 隧道
-countoff   # 依次停止：Cloudflared → Web 服务器 → 管理面板
-countkey   # 打印当前 API Key
-```
-
----
 
 ### 方式三：Web 界面
 
 浏览器打开 `http://localhost:8000`。
 
-#### 初始页面
-
 ![初始页面](docs/Web页面未检测.jpg)
+![检测结果](docs/检测完毕，页面未打开高级设置.jpg)
 
-界面从上到下分为以下几个区域：
+功能特性：
+- 📷 图片上传（拖拽 / 粘贴 / 点击选择）
+- 🚀 一键检测，实时进度条
+- 📊 置信度分布柱状图
+- 🔍 结果图片全屏缩放（支持拖拽、滚轮、触屏手势）
+- ⚙️ 高级设置：置信度阈值、IoU 阈值、模型切换
+- 🌐 中英文语言切换（设置全局生效）
+- 💾 低置信度样本保存（用于模型优化）
 
----
-
-#### ① API Key 认证栏（页面最顶部）
-
-页面顶部灰色横条，从左到右：
-- **🔑 API Key 标签** — 提示这是认证输入区
-- **密码输入框** — 输入 API Key（首次启动时自动生成，在终端或管理面板可见）
-- **连接按钮** — 绿色，保存 Key 并连接服务器，成功后旁边显示 `✅ 已保存`
-- 服务器启用认证时此栏可见，`--no-auth` 模式下自动隐藏
-
----
-
-#### ② 图片上传区（页面中部）
-
-虚线边框的大片区域，包含：
-- 📷 图标 + "点击上传 或 拖拽图片到此处" 提示文字
-- 支持 JPG / PNG / BMP，最大 10MB（可在 `config.yaml` 调整）
-- 也可 `Ctrl+V` 粘贴图片（截图后直接粘贴）
-- >500KB 的图片自动压缩到 1920px 宽
-- 上传成功后该区域变为图片预览
-
----
-
-#### ③ 开始检测按钮（上传区下方）
-
-- 🚀 **开始检测** — 绿色全宽按钮
-- 未上传图片时：灰色禁用状态，不可点击
-- 上传图片后：绿色可点击，按 `Enter` 键等效触发
-- 点击后依次显示：上传进度条 → 加载旋转动画 + 骨架屏 → 结果面板
-
----
-
-#### ④ 结果面板（检测完成后显示）
-
-**未展开高级设置的效果：**
-
-![检测结果（未展开高级设置）](docs/检测完毕，页面未打开高级设置.jpg)
-
-**展开高级设置的效果：**
-
-![检测结果（展开高级设置）](docs/检测完毕，页面打开高级设置.jpg)
-
-**顶部三个统计卡片（从左到右）：**
-
-| 卡片 | 内容 |
-|------|------|
-| 🔍 目标数 | 检测到的目标总数，大号绿色字体 |
-| ⚡ 耗时 (ms) | 服务器推理耗时，毫秒 |
-| 📐 尺寸 | 图片分辨率（宽 × 高） |
-
-**中部结果图片：**
-- YOLO 标注框 + 置信度标签
-- 鼠标悬停出现"点击查看大图"
-- 点击进入全屏缩放模式：`ESC` 关闭，`+`/`-`/`0` 缩放，鼠标拖拽移动
-
-**📊 置信度分布柱状图：**
-- 展示所有检测框的置信度在 0.0 ~ 1.0 之间的分布情况
-
-**底部操作按钮：**
-- 💾 **保存图片** — 下载结果图到本地
-- 🗑️ **清空** — 清除结果，回到初始状态
-- ❌ **这次识别不准 — 保存原图** — 橙色按钮，点击将原图保存到 `Valuable photos/` 目录，用于收集低置信度样本
-
----
-
-#### ⑤ 重试机制
-
-- 检测失败时自动重试（网络错误 / 超时）
-- 最多重试 3 次
-- 3 次均失败后显示错误信息
-
----
-
-#### ⑥ 高级设置（可折叠面板）
-
-点击 **▶ 高级设置** 展开，包含：
-
-| 控件 | 位置 | 功能 | 默认值 |
-|------|------|------|--------|
-| 置信度阈值 (Confidence) | 左侧滑块 | 过滤低置信度框，值越高结果越严格 | 0.25 |
-| IoU 阈值 (覆盖度) | 右侧滑块 | 控制重叠框去重力度，值越高保留越多 | 0.50 |
-| 模型文件 | 下方下拉框 | 切换 `models/` 目录下的 ONNX 模型文件 | 自动检测 |
-
-滑块值实时显示，下次检测时生效。模型切换即时应用。
-
----
-
-#### ⌨️ 键盘快捷键
+#### 键盘快捷键
 
 | 操作 | 按键 |
 |------|------|
 | 触发检测 | `Enter` |
 | 粘贴图片 | `Ctrl+V` |
 | 关闭缩放 | `ESC` |
-| 放大图片 | `+` |
-| 缩小图片 | `-` |
+| 放大 / 缩小 | `+` / `-` |
 | 适应屏幕 | `0` |
 
 ---
@@ -285,65 +103,49 @@ countkey   # 打印当前 API Key
 python web_server.py --port 8080              # 指定端口
 python web_server.py --no-auth                # 关闭认证（调试用）
 python web_server.py --api-key my-custom-key  # 指定 API Key
-
-# 管理面板
-python server_panel.py --auto-start           # 启动面板同时自动启动服务器
 ```
 
 ---
 
 ## 配置说明
 
-配置文件：`config.yaml`（提交到 Git）+ `config.local.yaml`（本地覆盖，不提交）
+配置文件：`config.yaml`
 
 ```yaml
-# 服务器
-port: 8000                    # 端口
-host: "0.0.0.0"              # 监听地址
-require_api_key: true         # 是否要求 API Key 认证
+port: 8000                          # 端口
+host: "0.0.0.0"                     # 监听地址
+require_api_key: true               # 是否要求 API Key 认证
+language: "zh"                      # 界面语言（zh/en）
 
-# 检测
 model_path: models/yolo26m_v2.onnx  # 模型文件路径
-input_size: 640               # 模型输入尺寸
-score_threshold: 0.25         # 置信度阈值
-nms_threshold: 0.5            # NMS 阈值
+input_size: 640                     # 模型输入尺寸
+score_threshold: 0.25               # 置信度阈值
+nms_threshold: 0.5                  # NMS 阈值
 
-# 上传限制
-max_upload_mb: 10             # 最大上传文件大小（MB）
-upload_timeout_seconds: 120   # 上传超时
-inference_timeout_seconds: 300  # 推理超时
+max_upload_mb: 10                   # 最大上传文件大小（MB）
+rate_limit_per_minute: 60           # 每分钟最大请求数
 
-# 限速
-rate_limit_per_minute: 60     # 每分钟最大请求数
+valuable_dir: "Valuable photos"     # 优质照片存储目录
+valuable_enable: false              # 是否启用优质照片筛选
 
-# 优质照片筛选（保存低置信度图片用于模型优化）
-valuable_dir: "Valuable photos"
-valuable_enable: false
-valuable_low_threshold: 0.5
-valuable_very_low_threshold: 0.3
-
-# 响应压缩（低带宽优化）
-enable_response_compression: true
-response_compress_min_size: 1000
-
-# Cloudflared 隧道
-tunnel_url: ""                # 留空，自动从 cloudflared 配置检测
+enable_response_compression: true   # 响应压缩
+tunnel_url: ""                      # Cloudflared 隧道地址
 ```
 
-> `config.local.yaml` 用于存放个人配置（如 `tunnel_url`），已被 `.gitignore` 排除，不会提交到 Git。
+> `config.local.yaml` 可用于存放个人配置（已被 `.gitignore` 排除）。
 
 ---
 
 ## API 接口
 
-### 公开端点（无需认证）
+### 公开端点
 
 | 路由 | 方法 | 说明 |
 |------|------|------|
 | `/` | GET | Web 前端页面 |
-| `/api/health` | GET | 健康检查（模型、版本） |
-| `/api/ping` | GET | 心跳检测（含认证状态） |
-| `/api/config` | GET | 公开配置（上传限制、版本） |
+| `/api/health` | GET | 健康检查 |
+| `/api/ping` | GET | 心跳检测 |
+| `/api/config` | GET | 公开配置 |
 | `/api/models` | GET | 可用模型列表 |
 
 ### 认证端点（需要 Bearer Token）
@@ -351,6 +153,7 @@ tunnel_url: ""                # 留空，自动从 cloudflared 配置检测
 | 路由 | 方法 | 说明 |
 |------|------|------|
 | `/api/detect` | POST | 上传图片进行目标检测 |
+| `/api/language` | PUT | 切换界面语言 |
 | `/api/key` | GET | 获取 API Key |
 | `/api/key/regenerate` | POST | 重新生成 API Key |
 | `/api/toggle-auth` | POST | 切换认证开关 |
@@ -360,8 +163,6 @@ tunnel_url: ""                # 留空，自动从 cloudflared 配置检测
 | `/api/kick-device` | POST | 踢出指定设备 |
 | `/api/valuable-stats` | GET | 优质照片统计 |
 | `/api/valuable-toggle` | POST | 切换优质照片筛选 |
-| `/api/valuable-reset` | POST | 重置照片计数 |
-| `/api/valuable-open-dir` | POST | 打开照片目录 |
 
 ### 调用示例
 
@@ -374,9 +175,11 @@ curl -X POST http://localhost:8000/api/detect \
   -H "Authorization: Bearer <API_KEY>" \
   -F "file=@sample.jpg"
 
-# 查看统计
-curl -H "Authorization: Bearer <API_KEY>" \
-  http://localhost:8000/api/stats
+# 切换语言
+curl -X PUT http://localhost:8000/api/language \
+  -H "Authorization: Bearer <API_KEY>" \
+  -H "Content-Type: application/json" \
+  -d '{"language": "en"}'
 ```
 
 ---
@@ -386,20 +189,11 @@ curl -H "Authorization: Bearer <API_KEY>" \
 ### Cloudflared Tunnel
 
 ```bash
-# 安装 cloudflared 并登录
 cloudflared tunnel login
-
-# 创建隧道
 cloudflared tunnel create yolo-object-counter
-
-# 配置 DNS（在 Cloudflare Dashboard 中）
 cloudflared tunnel route dns yolo-object-counter your-domain.example.com
-
-# 启动
 cloudflared tunnel run yolo-object-counter
 ```
-
-管理面板会自动从 `~/.cloudflared/config.yml` 读取隧道 URL 并显示。
 
 ### Tailscale
 
@@ -407,56 +201,44 @@ cloudflared tunnel run yolo-object-counter
 tailscale up
 ```
 
-管理面板会自动检测 Tailscale 状态并显示 Tailscale IP。其他设备可通过该 IP 访问。
+管理面板会自动检测 Tailscale / Cloudflared 状态并显示访问地址。
 
 ---
 
 ## 安全特性
 
-- **API Key 认证**：`secrets.token_urlsafe(32)` 生成，`secrets.compare_digest()` 防时序攻击
-- **ScanGuard 扫描防护**：10 秒窗口内检测 15+ 不同路径或 50+ 总错误 → 自动进入保护模式
+- **API Key 认证**：`secrets.token_urlsafe(32)` 生成，防时序攻击
+- **ScanGuard 扫描防护**：异常访问自动进入保护模式
 - **限速保护**：IP 级别限速，支持自动封禁
 - **路径穿越防护**：模型选择接口禁止 `../` 路径
 - **日志脱敏**：API Key 在日志中自动遮蔽
-- **CORS 限制**：默认关闭跨域访问
 
 ---
 
 ## 项目结构
 
 ```
-├── README.md
-├── config.yaml               # 配置文件
-├── requirements.txt          # Python 依赖
-├── start_panel.sh            # Linux/macOS 启动脚本
-├── 启动管理面板.bat           # Windows 启动脚本
 ├── web_server.py             # FastAPI 入口
 ├── server_panel.py           # 桌面管理面板（Tkinter）
-├── test_verification.py      # 验证测试
+├── config.yaml               # 配置文件
+├── requirements.txt          # Python 依赖
 ├── objcounter/               # 核心包
 │   ├── config.py             #   配置管理
+│   ├── i18n.py               #   国际化翻译
 │   ├── detector.py           #   YOLO ONNX 检测器
 │   ├── guard.py              #   ScanGuard 扫描防护
 │   ├── middleware.py          #   认证 + 限速中间件
-│   ├── rate_limiter.py       #   IP 级别限速器
-│   ├── device_tracker.py     #   在线设备追踪
-│   ├── stats.py              #   检测统计
-│   ├── valuable.py           #   优质照片筛选
-│   ├── logger.py             #   日志系统
 │   ├── state.py              #   集中应用状态
-│   ├── user_agent.py         #   UA 解析
-│   ├── theme.py / panel_ui.py / panel_controls.py  # 面板
-│   └── routes/               #   API 路由
-│       ├── detect.py         #     图片检测
-│       ├── admin.py          #     管理接口
-│       ├── models.py         #     模型管理
-│       ├── devices.py        #     设备管理
-│       └── pages.py          #     页面 + 优质照片
-├── agent-harness/            # CLI 工具（AI Agent 接口）
-│   ├── setup.py
-│   └── cli_anything/objcounter/
+│   ├── routes/               #   API 路由
+│   │   ├── detect.py         #     图片检测
+│   │   ├── admin.py          #     管理接口
+│   │   ├── models.py         #     模型管理
+│   │   ├── devices.py        #     设备管理
+│   │   └── pages.py          #     页面 + 优质照片
+│   └── panel_ui.py / panel_controls.py  # 面板
 ├── templates/
 │   └── index.html            # Web 前端
+├── agent-harness/            # CLI 工具
 ├── models/                   # 模型文件目录
 └── Valuable photos/          # 优质照片存储目录
 ```
@@ -467,8 +249,8 @@ tailscale up
 - **推理**：ONNX Runtime（支持 CUDA / CPU）
 - **模型**：Ultralytics YOLO 系列 ONNX 导出格式
 - **前端**：原生 HTML/CSS/JS（无外部 CDN 依赖）
-- **桌面面板**：Tkinter
-- **图像处理**：OpenCV / NumPy / Pillow
+- **桌面面板**：Tkinter / CustomTkinter
+- **图像处理**：OpenCV / NumPy
 
 ## 版本历史
 
@@ -480,10 +262,9 @@ tailscale up
 | v2.0.0 | 2026-05-15 | objcounter/ 包拆分 |
 | v3.0.0 | 2026-05-17 | Cloudflared 隧道 |
 | v4.1.0 | 2026-05-19 | CLI 工具 + 公开发布 |
-| v5.0.0 | 2026-05-22 | 通用化重构（YOLO Object Counter） |
-
-共 21 个提交，完整演变历史见 `git log`。
+| v5.0.0 | 2026-05-22 | 通用化重构 |
+| v5.5.0 | 2026-05-26 | 中英文语言切换 |
 
 ## 许可证
 
-本项目采用 PolyForm Noncommercial License 1.0.0 — 允许非商业使用，禁止商业用途。
+[PolyForm Noncommercial License 1.0.0](LICENSE) — 允许非商业使用，禁止商业用途。
