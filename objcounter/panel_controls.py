@@ -10,7 +10,8 @@ import urllib.request
 import yaml
 
 from objcounter.theme import Theme
-from objcounter.i18n import t as _t, set_config as _set_config
+from objcounter.config import set_config as _set_config
+from objcounter.i18n import t as _t
 
 
 class PanelControls:
