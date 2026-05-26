@@ -8,6 +8,7 @@ from fastapi import APIRouter, Request, HTTPException, Depends
 
 from objcounter.config import get_config, set_config, get_project_root
 from objcounter.detector import ObjectDetector
+from objcounter.i18n import t
 from objcounter.middleware import verify_api_key
 from objcounter.state import app_state
 
@@ -40,16 +41,16 @@ async def select_model(request: Request, _: str = Depends(verify_api_key)):
         data = {}
     model_name = data.get("model")
     if not model_name:
-        raise HTTPException(status_code=400, detail={"error": True, "message": "需要指定 model 参数", "code": 400})
+        raise HTTPException(status_code=400, detail={"error": True, "message": t("model_param_required"), "code": 400})
     if os.path.basename(model_name) != model_name:
-        raise HTTPException(status_code=400, detail={"error": True, "message": "无效的模型名称", "code": 400})
+        raise HTTPException(status_code=400, detail={"error": True, "message": t("model_invalid_name"), "code": 400})
     if not model_name.lower().endswith(".onnx"):
-        raise HTTPException(status_code=400, detail={"error": True, "message": "仅支持 .onnx 模型文件", "code": 400})
+        raise HTTPException(status_code=400, detail={"error": True, "message": t("model_onnx_only"), "code": 400})
 
     models_dir = os.path.join(get_project_root(), "models")
     model_path = os.path.join(models_dir, model_name)
     if not os.path.exists(model_path):
-        raise HTTPException(status_code=404, detail={"error": True, "message": f"模型文件不存在: {model_name}", "code": 404})
+        raise HTTPException(status_code=404, detail={"error": True, "message": t("model_not_found", name=model_name), "code": 404})
 
     logger.info(f"切换模型: {model_name}")
 
@@ -88,7 +89,7 @@ async def select_model(request: Request, _: str = Depends(verify_api_key)):
         return {"ok": True, "model": model_name, "from_warm": False}
     except Exception as e:
         logger.error(f"模型切换失败: {e}")
-        raise HTTPException(status_code=500, detail={"error": True, "message": f"模型加载失败: {e}", "code": 500})
+        raise HTTPException(status_code=500, detail={"error": True, "message": t("model_load_failed", error=e), "code": 500})
 
 
 @router.post("/api/models/warm")
@@ -101,11 +102,11 @@ async def warm_model(request: Request, _: str = Depends(verify_api_key)):
         data = {}
     model_name = data.get("model")
     if not model_name:
-        raise HTTPException(status_code=400, detail={"error": True, "message": "需要指定 model 参数"})
+        raise HTTPException(status_code=400, detail={"error": True, "message": t("model_param_required")})
     if os.path.basename(model_name) != model_name:
-        raise HTTPException(status_code=400, detail={"error": True, "message": "无效的模型名称"})
+        raise HTTPException(status_code=400, detail={"error": True, "message": t("model_invalid_name")})
     if not model_name.lower().endswith(".onnx"):
-        raise HTTPException(status_code=400, detail={"error": True, "message": "仅支持 .onnx 模型文件"})
+        raise HTTPException(status_code=400, detail={"error": True, "message": t("model_onnx_only")})
 
     # Already warm?
     existing = app_state.get_warm_model(model_name)
@@ -117,7 +118,7 @@ async def warm_model(request: Request, _: str = Depends(verify_api_key)):
     models_dir = os.path.join(get_project_root(), "models")
     model_path = os.path.join(models_dir, model_name)
     if not os.path.exists(model_path):
-        raise HTTPException(status_code=404, detail={"error": True, "message": f"模型文件不存在: {model_name}"})
+        raise HTTPException(status_code=404, detail={"error": True, "message": t("model_not_found", name=model_name)})
 
     try:
         detector = await asyncio.to_thread(
@@ -132,7 +133,7 @@ async def warm_model(request: Request, _: str = Depends(verify_api_key)):
         return {"ok": True, "model": model_name, "status": "loaded"}
     except Exception as e:
         logger.error(f"[WARM] Failed to warm model {model_name}: {e}")
-        raise HTTPException(status_code=500, detail={"error": True, "message": f"模型加载失败: {e}"})
+        raise HTTPException(status_code=500, detail={"error": True, "message": t("model_load_failed", error=e)})
 
 
 @router.get("/api/models/warm-status")

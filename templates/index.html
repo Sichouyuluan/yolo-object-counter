@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<title>🔍 YOLO 目标检测计数 - Object Counter</title>
+<title data-i18n="page_title">🔍 YOLO 目标检测计数 - Object Counter</title>
 <style>
 *,::before,::after{box-sizing:border-box;margin:0;padding:0}
 body{font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,sans-serif;background:#0f1117;color:#e2e8f0;min-height:100vh;line-height:1.5}
@@ -152,15 +152,16 @@ details.adv-settings .slider-group{padding:0 1rem 0.875rem}
 <body>
 <!-- Offline Overlay -->
 <div id="offlineOverlay" class="offline-pulse fixed top-0 left-0 right-0 z-50 bg-danger/90 text-white text-center py-3 font-semibold text-sm hidden">
-  ⚠️ 服务器连接已断开，正在尝试重连...
+  <span data-i18n="offline_warning">⚠️ 服务器连接已断开，正在尝试重连...</span>
 </div>
 
 <!-- Header -->
 <header class="border-b border-surf-border px-4 md:px-6 py-3 flex items-center gap-3">
   <span class="text-2xl">🔍</span>
-  <h1 class="text-lg font-semibold">目标检测计数</h1>
+  <h1 class="text-lg font-semibold" data-i18n="title">目标检测计数</h1>
   <span class="bg-accent text-black text-xs font-bold px-2.5 py-0.5 rounded-full">YOLOv8</span>
-  <div class="ml-auto flex items-center gap-2 bg-surf-card border border-surf-border rounded-full px-3 py-1.5 text-xs">
+  <button id="langBtn" onclick="toggleLang()" class="ml-auto cursor-pointer bg-surf-card border border-surf-border rounded-full px-2.5 py-1 text-xs text-dim hover:text-white hover:border-accent/50 transition-colors" title="Switch language">中文</button>
+  <div class="flex items-center gap-2 bg-surf-card border border-surf-border rounded-full px-3 py-1.5 text-xs">
     <span id="connDot" class="w-2.5 h-2.5 rounded-full bg-warn shadow-[0_0_6px_#facc15]"></span>
     <span id="connText" class="text-dim">检测中...</span>
   </div>
@@ -168,9 +169,9 @@ details.adv-settings .slider-group{padding:0 1rem 0.875rem}
 
 <!-- API Key Bar -->
 <div id="keyBar" class="border-b border-surf-border bg-surf-card px-4 md:px-6 py-2.5 flex flex-wrap gap-2 items-center">
-  <span class="text-dim text-xs font-medium">🔑 API Key</span>
-  <input id="keyInput" type="password" placeholder="输入 API Key" class="flex-1 min-w-[160px] bg-[#0f1117] border border-surf-border text-white px-3 py-1.5 rounded-lg text-xs focus:outline-none focus:border-accent/50">
-  <button onclick="saveKey()" class="bg-accent text-black text-xs font-semibold px-4 py-1.5 rounded-lg hover:opacity-90 transition-opacity">连接</button>
+  <span class="text-dim text-xs font-medium" data-i18n="api_key_label">🔑 API Key</span>
+  <input id="keyInput" type="password" data-i18n-placeholder="api_key_placeholder" placeholder="输入 API Key" class="flex-1 min-w-[160px] bg-[#0f1117] border border-surf-border text-white px-3 py-1.5 rounded-lg text-xs focus:outline-none focus:border-accent/50">
+  <button onclick="saveKey()" class="bg-accent text-black text-xs font-semibold px-4 py-1.5 rounded-lg hover:opacity-90 transition-opacity" data-i18n="btn_connect">连接</button>
   <span id="keyStatus" class="text-xs"></span>
 </div>
 
@@ -180,10 +181,10 @@ details.adv-settings .slider-group{padding:0 1rem 0.875rem}
   <!-- Upload Zone -->
   <div id="dropZone" class="upload-pulse border-2 border-dashed rounded-2xl py-12 md:py-16 px-6 text-center cursor-pointer transition-all duration-300 hover:bg-accent/5" onclick="document.getElementById('fileInput').click()">
     <div class="text-5xl mb-3 opacity-80">📷</div>
-    <p class="text-lg font-medium text-white/90">点击上传 或 拖拽图片到此处</p>
-    <p class="text-sm text-dim mt-1" id="uploadHint">支持 JPG / PNG / BMP，最大 10MB</p>
+    <p class="text-lg font-medium text-white/90" data-i18n="upload_click">点击上传 或 拖拽图片到此处</p>
+    <p class="text-sm text-dim mt-1" id="uploadHint" data-i18n="upload_hint">支持 JPG / PNG / BMP，最大 10MB</p>
     <p class="text-xs text-accent/80 mt-3 flex items-center justify-center gap-1">
-      <span>💡</span> 也可 <kbd class="bg-surf-card px-1.5 py-0.5 rounded text-xs border border-surf-border">Ctrl+V</kbd> 粘贴图片
+      <span>💡</span> <span data-i18n="upload_paste">也可</span> <kbd class="bg-surf-card px-1.5 py-0.5 rounded text-xs border border-surf-border">Ctrl+V</kbd> <span data-i18n="upload_paste_suffix">粘贴图片</span>
     </p>
   </div>
   <input type="file" id="fileInput" accept="image/*" class="hidden">
@@ -195,18 +196,18 @@ details.adv-settings .slider-group{padding:0 1rem 0.875rem}
 
   <!-- Progress Bars -->
   <div id="uploadProgress" class="hidden space-y-1.5">
-    <div class="flex justify-between text-xs text-dim"><span>⬆ 上传中</span><span id="uploadText">0%</span></div>
+    <div class="flex justify-between text-xs text-dim"><span data-i18n="progress_upload">⬆ 上传中</span><span id="uploadText">0%</span></div>
     <div class="progress-bar"><div class="progress-fill" id="uploadFill"></div></div>
   </div>
   <div id="downloadProgress" class="hidden space-y-1.5">
-    <div class="flex justify-between text-xs text-dim"><span>⬇ 下载中</span><span id="downloadText">0%</span></div>
+    <div class="flex justify-between text-xs text-dim"><span data-i18n="progress_download">⬇ 下载中</span><span id="downloadText">0%</span></div>
     <div class="progress-bar"><div class="progress-fill" id="downloadFill"></div></div>
   </div>
 
   <!-- Loading -->
   <div id="loading" class="hidden space-y-4 py-8">
     <div class="flex justify-center"><div class="w-10 h-10 border-3 border-surf-border border-t-accent rounded-full animate-spin"></div></div>
-    <p id="loadingText" class="text-center text-sm text-dim">处理中...</p>
+    <p id="loadingText" class="text-center text-sm text-dim" data-i18n="loading">处理中...</p>
     <p id="loadingDetail" class="text-center text-xs text-dim/60"></p>
     <!-- Skeleton -->
     <div class="grid grid-cols-3 gap-3">
@@ -223,15 +224,15 @@ details.adv-settings .slider-group{padding:0 1rem 0.875rem}
     <div class="grid grid-cols-3 gap-3">
       <div class="bg-surf-card border border-surf-border rounded-xl p-4 text-center">
         <div class="text-3xl font-bold text-accent" id="countNum">0</div>
-        <div class="text-xs text-dim mt-1">🔍 目标数</div>
+        <div class="text-xs text-dim mt-1" data-i18n="stat_count">🔍 目标数</div>
       </div>
       <div class="bg-surf-card border border-surf-border rounded-xl p-4 text-center">
         <div class="text-3xl font-bold text-accent" id="timeNum">0</div>
-        <div class="text-xs text-dim mt-1">⚡ 耗时 (ms)</div>
+        <div class="text-xs text-dim mt-1" data-i18n="stat_time">⚡ 耗时 (ms)</div>
       </div>
       <div class="bg-surf-card border border-surf-border rounded-xl p-4 text-center">
         <div class="text-xl md:text-2xl font-bold text-accent" id="sizeNum" style="word-break:keep-all;overflow-wrap:break-word">0</div>
-        <div class="text-xs text-dim mt-1">📐 尺寸</div>
+        <div class="text-xs text-dim mt-1" data-i18n="stat_size">📐 尺寸</div>
       </div>
     </div>
 
@@ -239,13 +240,13 @@ details.adv-settings .slider-group{padding:0 1rem 0.875rem}
     <div class="bg-surf-card border border-surf-border rounded-xl overflow-hidden relative group">
       <img id="resultImg" src="" class="w-full cursor-zoom-in" onclick="zoomOpen(this.src)" alt="检测结果">
       <div class="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/60 to-transparent p-3 opacity-0 group-hover:opacity-100 transition-opacity">
-        <span class="text-xs text-white/80">点击查看大图</span>
+        <span class="text-xs text-white/80" data-i18n="click_to_zoom">点击查看大图</span>
       </div>
     </div>
 
     <!-- Confidence Distribution -->
     <div id="confDistribution" class="bg-surf-card border border-surf-border rounded-xl p-4 hidden">
-      <div class="text-xs text-dim mb-2">📊 置信度分布</div>
+      <div class="text-xs text-dim mb-2" data-i18n="conf_distribution">📊 置信度分布</div>
       <div class="flex items-end gap-1 h-12" id="confBars"></div>
       <div class="flex justify-between text-[10px] text-dim/60 mt-1">
         <span>0.0</span><span>0.5</span><span>1.0</span>
@@ -266,12 +267,12 @@ details.adv-settings .slider-group{padding:0 1rem 0.875rem}
   <!-- Advanced Settings -->
   <details class="bg-surf-card border border-surf-border rounded-xl overflow-hidden">
     <summary class="px-4 py-3 cursor-pointer text-sm text-dim hover:text-white transition-colors flex items-center gap-2">
-      <span class="text-xs transition-transform duration-200">▶</span> 高级设置
+      <span class="text-xs transition-transform duration-200">▶</span> <span data-i18n="adv_settings">▶ 高级设置</span>
     </summary>
     <div class="px-4 pb-4 grid md:grid-cols-2 gap-4">
       <div class="bg-[#0f1117] border border-surf-border rounded-xl p-4">
         <div class="flex justify-between items-center mb-2">
-          <span class="text-xs text-dim">置信度阈值 (Confidence)</span>
+          <span class="text-xs text-dim" data-i18n="conf_threshold">置信度阈值 (Confidence)</span>
           <span class="text-sm font-bold text-accent" id="confValue">0.25</span>
         </div>
         <input type="range" id="confSlider" min="0.01" max="1.0" step="0.01" value="0.25"
@@ -279,7 +280,7 @@ details.adv-settings .slider-group{padding:0 1rem 0.875rem}
       </div>
       <div class="bg-[#0f1117] border border-surf-border rounded-xl p-4">
         <div class="flex justify-between items-center mb-2">
-          <span class="text-xs text-dim">IoU 阈值 (覆盖度)</span>
+          <span class="text-xs text-dim" data-i18n="iou_threshold">IoU 阈值 (覆盖度)</span>
           <span class="text-sm font-bold text-accent" id="iouValue">0.50</span>
         </div>
         <input type="range" id="iouSlider" min="0.01" max="1.0" step="0.01" value="0.50"
@@ -287,12 +288,12 @@ details.adv-settings .slider-group{padding:0 1rem 0.875rem}
       </div>
       <div class="bg-[#0f1117] border border-surf-border rounded-xl p-4 md:col-span-2">
         <div class="flex justify-between items-center mb-2">
-          <span class="text-xs text-dim">模型文件</span>
+          <span class="text-xs text-dim" data-i18n="model_file">模型文件</span>
           <span class="text-xs text-accent" id="modelStatus">加载中...</span>
         </div>
         <select id="modelSelect" onchange="switchModel(this.value)"
                 class="w-full bg-surf-card border border-surf-border text-white px-3 py-2 rounded-lg text-sm focus:outline-none focus:border-accent/50 cursor-pointer">
-          <option value="">加载中...</option>
+          <option value="" data-i18n="model_loading">加载中...</option>
         </select>
         <div id="warmStatus" class="warm-list"></div>
       </div>
@@ -302,16 +303,16 @@ details.adv-settings .slider-group{padding:0 1rem 0.875rem}
 
 <!-- Zoom Overlay -->
 <div id="zoomOverlay" class="zoom-overlay">
-  <button class="zoom-close" onclick="zoomClose()" title="关闭 (ESC)">&times;</button>
+  <button class="zoom-close" onclick="zoomClose()" data-i18n-title="zoom_close" title="关闭 (ESC)">&times;</button>
   <div id="zoomWrap" class="zoom-img-wrap">
     <img id="zoomImg" src="" alt="放大查看" draggable="false">
   </div>
   <div class="zoom-ctrl">
-    <button onclick="zoomOut()" title="缩小">−</button>
+    <button onclick="zoomOut()" data-i18n-title="zoom_out" title="缩小">−</button>
     <span class="zoom-level" id="zoomLevel">100%</span>
-    <button onclick="zoomIn()" title="放大">+</button>
-    <button onclick="zoomFit()" title="适应窗口">⊡</button>
-    <button onclick="zoomMax()" title="最大缩放">⊞</button>
+    <button onclick="zoomIn()" data-i18n-title="zoom_in" title="放大">+</button>
+    <button onclick="zoomFit()" data-i18n-title="zoom_fit" title="适应窗口">⊡</button>
+    <button onclick="zoomMax()" data-i18n-title="zoom_max" title="最大缩放">⊞</button>
   </div>
 </div>
 
@@ -331,8 +332,148 @@ var retryCount=0;
 var MAX_RETRIES=3;
 var lastResult=null;
 var lastOriginalFile=null;
+var currentLang='zh';
 
 function $(id){return document.getElementById(id)}
+
+// ============================================================
+//  i18n — Translation System
+// ============================================================
+var I18N={
+zh:{
+  offline_warning:"⚠️ 服务器连接已断开，正在尝试重连...",page_title:"🔍 YOLO 目标检测计数 - Object Counter",title:"目标检测计数",
+  api_key_label:"\U0001f511 API Key",api_key_placeholder:"输入 API Key",btn_connect:"连接",
+  upload_click:"点击上传 或 拖拽图片到此处",upload_hint:"支持 JPG / PNG / BMP，最大 {max}MB",
+  upload_paste:"也可",upload_paste_suffix:"粘贴图片",
+  btn_detect:"\U0001f680 开始检测",btn_detect_file:"\U0001f680 检测 {name}",
+  progress_upload:"⬆ 上传中",progress_download:"⬇ 下载中",loading:"处理中...",
+  stat_count:"\U0001f50d 目标数",stat_time:"⚡ 耗时 (ms)",stat_size:"\U0001f4d0 尺寸",
+  click_to_zoom:"点击查看大图",conf_distribution:"\U0001f4ca 置信度分布",
+  btn_save:"❌ 这次识别不准 — 保存原图",btn_saved:"✅ 已保存到优质照片",
+  btn_retry:"\U0001f504 重试检测",adv_settings:"▶ 高级设置",
+  conf_threshold:"置信度阈值 (Confidence)",iou_threshold:"IoU 阈值 (覆盖度)",
+  model_file:"模型文件",model_loading:"加载中...",
+  zoom_close:"关闭 (ESC)",zoom_out:"缩小",zoom_in:"放大",zoom_fit:"适应窗口",zoom_max:"最大缩放",
+  lang_toggle:"中文",
+  connected:"已连接",disconnected:"未连接",checking:"检测中...",
+  key_saved:"✅ Key 已保存",key_input_first:"请输入 API Key",key_saved_toast:"API Key 已保存",
+  please_select_image:"请先选择图片",please_enter_key:"请先输入 API Key",
+  server_offline:"服务器未连接，请稍后重试",
+  compressing:"\U0001f4e6 正在压缩图片...",uploading:"⬆ 正在上传...",
+  detect_done:"✅ 检测完成",model_processing:"模型处理完成",
+  detect_result:"检测完成: {count} 粒",
+  retry_left:"检测失败，{count} 次重试机会",retry_exhausted:"检测失败，已达最大重试次数",
+  no_image_save:"没有可保存的图片",saving:"⏳ 正在保存...",
+  saved_ok:"原图已保存",save_failed:"保存失败",network_error:"网络错误",
+  parse_failed:"解析响应失败",detect_failed:"检测失败",
+  key_invalid_check:"API Key 无效，请检查",key_error:"API Key 错误",
+  rate_limited_toast:"请求过于频繁，请稍后再试",
+  network_error_check:"网络错误，请检查连接",timeout_check:"请求超时，请检查网络",
+  no_model:"无可用模型",current_model:"当前: {name}",no_selection:"未选择",
+  fetch_failed:"获取失败",no_warm_model:"无预热模型",
+  switching:"切换中...",model_switched_toast:"模型已切换: {name}",model_switch_fail:"模型切换失败",
+  model_select:"请选择模型",
+  file_too_large_toast:"文件过大，最大 {max}MB",file_selected:"已选择: {name}",
+  conf_count:"个"
+},
+en:{
+  offline_warning:"⚠️ Server disconnected, reconnecting...",page_title:"🔍 YOLO Object Counter",title:"Object Counter",
+  api_key_label:"\U0001f511 API Key",api_key_placeholder:"Enter API Key",btn_connect:"Connect",
+  upload_click:"Click to upload or drag image here",upload_hint:"Supports JPG / PNG / BMP, max {max}MB",
+  upload_paste:"or",upload_paste_suffix:"to paste image",
+  btn_detect:"\U0001f680 Start Detection",btn_detect_file:"\U0001f680 Detect {name}",
+  progress_upload:"⬆ Uploading",progress_download:"⬇ Downloading",loading:"Processing...",
+  stat_count:"\U0001f50d Objects",stat_time:"⚡ Time (ms)",stat_size:"\U0001f4d0 Size",
+  click_to_zoom:"Click to zoom",conf_distribution:"\U0001f4ca Confidence Distribution",
+  btn_save:"❌ Poor detection — Save original",btn_saved:"✅ Saved to valuable photos",
+  btn_retry:"\U0001f504 Retry Detection",adv_settings:"▶ Advanced Settings",
+  conf_threshold:"Confidence Threshold",iou_threshold:"IoU Threshold (Overlap)",
+  model_file:"Model File",model_loading:"Loading...",
+  zoom_close:"Close (ESC)",zoom_out:"Zoom Out",zoom_in:"Zoom In",zoom_fit:"Fit Window",zoom_max:"Max Zoom",
+  lang_toggle:"EN",
+  connected:"Connected",disconnected:"Disconnected",checking:"Checking...",
+  key_saved:"✅ Key saved",key_input_first:"Please enter API Key",key_saved_toast:"API Key saved",
+  please_select_image:"Please select an image first",please_enter_key:"Please enter API Key first",
+  server_offline:"Server offline, please try again later",
+  compressing:"\U0001f4e6 Compressing image...",uploading:"⬆ Uploading...",
+  detect_done:"✅ Detection complete",model_processing:"Model processing done",
+  detect_result:"Detected: {count} objects",
+  retry_left:"Failed, {count} retries left",retry_exhausted:"Failed, max retries reached",
+  no_image_save:"No image to save",saving:"⏳ Saving...",
+  saved_ok:"Image saved",save_failed:"Save failed",network_error:"Network error",
+  parse_failed:"Failed to parse response",detect_failed:"Detection failed",
+  key_invalid_check:"Invalid API Key, please check",key_error:"API Key error",
+  rate_limited_toast:"Too many requests, please try again later",
+  network_error_check:"Network error, please check connection",timeout_check:"Request timeout, please check network",
+  no_model:"No available models",current_model:"Current: {name}",no_selection:"None",
+  fetch_failed:"Failed to fetch",no_warm_model:"No warmed models",
+  switching:"Switching...",model_switched_toast:"Model switched: {name}",model_switch_fail:"Model switch failed",
+  model_select:"Select model",
+  file_too_large_toast:"File too large, max {max}MB",file_selected:"Selected: {name}",
+  conf_count:""
+}};
+
+function t(key,params){
+  var d=I18N[currentLang]||I18N.zh;
+  var s=d[key]||I18N.zh[key]||key;
+  if(params){for(var k in params){s=s.replace(new RegExp('\\{'+k+'\\}','g'),params[k])}}
+  return s;
+}
+
+function applyTranslations(){
+  document.querySelectorAll('[data-i18n]').forEach(function(el){
+    var key=el.getAttribute('data-i18n');
+    var txt=t(key);
+    if(txt)el.textContent=txt;
+  });
+  document.querySelectorAll('[data-i18n-placeholder]').forEach(function(el){
+    var key=el.getAttribute('data-i18n-placeholder');
+    var txt=t(key);
+    if(txt)el.placeholder=txt;
+  });
+  document.querySelectorAll('[data-i18n-title]').forEach(function(el){
+    var key=el.getAttribute('data-i18n-title');
+    var txt=t(key);
+    if(txt)el.title=txt;
+  });
+  document.documentElement.lang=currentLang==='zh'?'zh-CN':'en';
+  var lb=$('langBtn');if(lb)lb.textContent=t('lang_toggle');
+}
+
+function toggleLang(){
+  currentLang=currentLang==='zh'?'en':'zh';
+  applyTranslations();
+  var headers={'Content-Type':'application/json'};
+  if(!authDisabled&&apiKey)headers['Authorization']='Bearer '+apiKey;
+  fetch('/api/language',{method:'PUT',headers:headers,body:JSON.stringify({language:currentLang})})
+  .catch(function(){});
+  updateDynamicTexts();
+}
+
+function updateDynamicTexts(){
+  var db=$('detectBtn');
+  if(db.textContent.indexOf('\U0001f680')>=0||db.textContent.indexOf('🚀')>=0){
+    if(selectedFile){db.textContent=t('btn_detect_file',{name:selectedFile.name})}
+    else{db.textContent=t('btn_detect')}
+  }
+  var cs=$('connText');
+  if(cs){
+    if(serverOnline){cs.textContent=t('connected')}
+    else if(cs.textContent==='已连接'||cs.textContent==='Connected'){cs.textContent=t('connected')}
+  }
+  var ms=$('modelStatus');
+  if(ms){
+    var txt=ms.textContent;
+    if(txt==='加载中...'||txt==='Loading...')ms.textContent=t('model_loading');
+    else if(txt==='未选择'||txt==='None')ms.textContent=t('no_selection');
+    else if(txt==='获取失败'||txt==='Failed to fetch')ms.textContent=t('fetch_failed');
+    else if(txt==='无预热模型'||txt==='No warmed models')ms.textContent=t('no_warm_model');
+    else if(txt==='切换中...'||txt==='Switching...')ms.textContent=t('switching');
+    else if(txt==='切换失败'||txt==='Model switch failed')ms.textContent=t('model_switch_fail');
+  }
+  var hb=$('warmStatus');
+  if(hb&&(hb.textContent==='无预热模型'||hb.textContent==='No warmed models'))hb.textContent=t('no_warm_model');
+}
 
 // ============================================================
 //  Image Compression
@@ -370,21 +511,21 @@ function setConnState(state,detail){
   dot.className='w-2.5 h-2.5 rounded-full';
   if(state==='online'){
     dot.classList.add('bg-accent','shadow-[0_0_6px_#4ade80]');
-    text.textContent='已连接';
+    text.textContent=t('connected');
     text.style.color='#4ade80';
     overlay.classList.add('hidden');
     overlay.classList.remove('flex');
     serverOnline=true;
   }else if(state==='offline'){
     dot.classList.add('bg-danger','shadow-[0_0_6px_#f87171]');
-    text.textContent='未连接';
+    text.textContent=t('disconnected');
     text.style.color='#f87171';
     overlay.classList.remove('hidden');
     overlay.classList.add('flex');
     serverOnline=false;
   }else{
     dot.classList.add('bg-warn','shadow-[0_0_6px_#facc15]');
-    text.textContent=detail||'检测中...';
+    text.textContent=detail||t('checking');
     text.style.color='#facc15';
   }
 }
@@ -429,7 +570,9 @@ var maxUploadMB = 10;
 fetch('/api/config').then(function(r){return r.json()}).then(function(c){
   maxUploadMB = c.max_upload_mb || 10;
   if(c.auth_enabled === false){authDisabled = true;}
-  $('uploadHint').textContent = '支持 JPG / PNG / BMP，最大 '+maxUploadMB+'MB';
+  if(c.language){currentLang=c.language}
+  applyTranslations();
+  $('uploadHint').textContent=t('upload_hint',{max:maxUploadMB});
 }).catch(function(){});
 fetch('/api/health').then(function(r){return r.json()}).then(function(d){
   if(d.auth===false){authDisabled=true;$('keyBar').classList.add('hidden')}
@@ -437,17 +580,17 @@ fetch('/api/health').then(function(r){return r.json()}).then(function(d){
 }).catch(function(){});
 if(apiKey){
   $('keyInput').value='***';
-  $('keyStatus').textContent='✅ 已保存';
+  $('keyStatus').textContent=t('key_saved');
   $('keyStatus').style.color='#4ade80';
 }
 
 function saveKey(){
   apiKey=$('keyInput').value.trim();
-  if(!apiKey){toast('请输入 API Key','error');return}
+  if(!apiKey){toast(t('key_input_first'),'error');return}
   localStorage.setItem('count_api_key',apiKey);
-  $('keyStatus').textContent='✅ Key 已保存';
+  $('keyStatus').textContent=t('key_saved');
   $('keyStatus').style.color='#4ade80';
-  toast('API Key 已保存','success');
+  toast(t('key_saved_toast'),'success');
 }
 
 // ============================================================
@@ -461,13 +604,13 @@ dz.addEventListener('dragleave',function(){dz.classList.remove('!border-accent',
 dz.addEventListener('drop',function(e){e.preventDefault();dz.classList.remove('!border-accent','!bg-accent/5');dz.classList.add('upload-pulse');if(e.dataTransfer.files[0])handleFile(e.dataTransfer.files[0])});
 
 function handleFile(f){
-  if(!f.type.startsWith('image/')){toast('请上传图片文件','error');return}
-  if(f.size>maxUploadMB*1024*1024){toast('文件过大，最大 '+maxUploadMB+'MB','error');return}
+  if(!f.type.startsWith('image/')){toast(t('upload_no_image'),'error');return}
+  if(f.size>maxUploadMB*1024*1024){toast(t('file_too_large_toast',{max:maxUploadMB}),'error');return}
   selectedFile=f;
   lastOriginalFile=f;
   $('detectBtn').disabled=false;
-  $('detectBtn').textContent='🚀 检测 '+f.name;
-  toast('已选择: '+f.name,'success');
+  $('detectBtn').textContent=t('btn_detect_file',{name:f.name});
+  toast(t('file_selected',{name:f.name}),'success');
 }
 
 // ============================================================
@@ -497,7 +640,7 @@ function showConfDistribution(detections){
     var pct=(count/max*100).toFixed(0);
     bar.className='flex-1 bg-accent/60 rounded-t';
     bar.style.height=pct+'%';
-    bar.title=count+'个';
+    bar.title=count+(currentLang==='en'?'':'个');
     bars.appendChild(bar);
   });
 }
@@ -506,25 +649,25 @@ function showConfDistribution(detections){
 //  Detect
 // ============================================================
 function detect(){
-  if(!selectedFile){toast('请先选择图片','error');return}
-  if(!authDisabled&&!apiKey){toast('请先输入 API Key','error');return}
-  if(!serverOnline){toast('服务器未连接，请稍后重试','error');return}
+  if(!selectedFile){toast(t('please_select_image'),'error');return}
+  if(!authDisabled&&!apiKey){toast(t('please_enter_key'),'error');return}
+  if(!serverOnline){toast(t('server_offline'),'error');return}
 
   $('detectBtn').disabled=true;
   $('retryBtn').classList.add('hidden');
   $('saveBtn').classList.add('hidden');
   $('resultPanel').classList.add('hidden');
   $('loading').classList.remove('hidden');
-  $('loadingText').textContent='📦 正在压缩图片...';
+  $('loadingText').textContent=t('compressing');
   $('loadingDetail').textContent=selectedFile.name+' ('+formatSize(selectedFile.size)+')';
 
   compressImage(selectedFile).then(function(compressedFile){
-    $('loadingText').textContent='⬆ 正在上传...';
-    $('loadingDetail').textContent='压缩后: '+formatSize(compressedFile.size)+' (原始: '+formatSize(selectedFile.size)+')';
+    $('loadingText').textContent=t('uploading');
+    $('loadingDetail').textContent='Compressed: '+formatSize(compressedFile.size)+' (Original: '+formatSize(selectedFile.size)+')';
     return uploadWithProgress(compressedFile);
   }).then(function(result){
-    $('loadingText').textContent='✅ 检测完成';
-    $('loadingDetail').textContent='模型处理完成';
+    $('loadingText').textContent=t('detect_done');
+    $('loadingDetail').textContent=t('model_processing');
     $('countNum').textContent=result.count;
     $('timeNum').textContent=result.elapsed_ms;
     $('sizeNum').textContent=result.image_size.width+'×'+result.image_size.height;
@@ -533,23 +676,23 @@ function detect(){
     showConfDistribution(result.detections);
     $('saveBtn').classList.remove('hidden');
     $('saveBtn').disabled=false;
-    $('saveBtn').textContent='❌ 这次识别不准 — 保存原图';
+    $('saveBtn').textContent=t('btn_save');
     $('saveBtn').style.borderColor='';$('saveBtn').style.color='';
     lastResult=result;
-    toast('检测完成: '+result.count+' 粒','success');
+    toast(t('detect_result',{count:result.count}),'success');
     retryCount=0;
   }).catch(function(e){
     console.error('Detection failed:',e);
     if(retryCount<MAX_RETRIES){
-      toast('检测失败，'+(MAX_RETRIES-retryCount)+' 次重试机会','error');
+      toast(t('retry_left',{count:MAX_RETRIES-retryCount}),'error');
       $('retryBtn').classList.remove('hidden');
     }else{
-      toast('检测失败，已达最大重试次数','error');
+      toast(t('retry_exhausted'),'error');
     }
   }).finally(function(){
     $('loading').classList.add('hidden');
     $('detectBtn').disabled=false;
-    $('detectBtn').textContent='🚀 开始检测';
+    $('detectBtn').textContent=t('btn_detect');
     showProgress('uploadProgress',false);
     showProgress('downloadProgress',false);
   });
@@ -561,13 +704,13 @@ function retryDetect(){retryCount++;detect()}
 //  Save Image (识别不准)
 // ============================================================
 function saveImage(){
-  if(!lastOriginalFile){toast('没有可保存的图片','error');return}
-  if(!authDisabled&&!apiKey){toast('请先输入 API Key','error');return}
-  if(!serverOnline){toast('服务器未连接','error');return}
+  if(!lastOriginalFile){toast(t('no_image_save'),'error');return}
+  if(!authDisabled&&!apiKey){toast(t('please_enter_key'),'error');return}
+  if(!serverOnline){toast(t('server_offline'),'error');return}
 
   var btn=$('saveBtn');
   btn.disabled=true;
-  btn.textContent='⏳ 正在保存...';
+  btn.textContent=t('saving');
 
   var fd=new FormData();fd.append('file',lastOriginalFile);
   var xhr=new XMLHttpRequest();
@@ -575,19 +718,19 @@ function saveImage(){
   if(!authDisabled&&apiKey)xhr.setRequestHeader('Authorization','Bearer '+apiKey);
   xhr.onload=function(){
     if(xhr.status>=200&&xhr.status<300){
-      btn.textContent='✅ 已保存到优质照片';
+      btn.textContent=t('btn_saved');
       btn.style.borderColor='#4ade80';btn.style.color='#4ade80';
-      toast('原图已保存','success');
+      toast(t('saved_ok'),'success');
     }else{
       btn.disabled=false;
-      btn.textContent='❌ 这次识别不准 — 保存原图';
-      toast('保存失败','error');
+      btn.textContent=t('btn_save');
+      toast(t('save_failed'),'error');
     }
   };
   xhr.onerror=function(){
     btn.disabled=false;
-    btn.textContent='❌ 这次识别不准 — 保存原图';
-    toast('网络错误','error');
+    btn.textContent=t('btn_save');
+    toast(t('network_error'),'error');
   };
   xhr.timeout=30000;
   xhr.send(fd);
@@ -622,18 +765,18 @@ function uploadWithProgress(file){
     };
     xhr.onload=function(){
       if(xhr.status>=200&&xhr.status<300){
-        try{resolve(JSON.parse(xhr.responseText))}catch(ex){reject(new Error('解析响应失败'))}
+        try{resolve(JSON.parse(xhr.responseText))}catch(ex){reject(new Error(t('parse_failed')))}
       }else{
-        var errMsg='检测失败';
+        var errMsg=t('detect_failed');
         try{var ej=JSON.parse(xhr.responseText);errMsg=ej.detail||errMsg}catch(_){}
-        if(xhr.status===401)errMsg='API Key 无效，请检查';
-        else if(xhr.status===403)errMsg='API Key 错误';
-        else if(xhr.status===429)errMsg='请求过于频繁，请稍后再试';
+        if(xhr.status===401)errMsg=t('key_invalid_check');
+        else if(xhr.status===403)errMsg=t('key_error');
+        else if(xhr.status===429)errMsg=t('rate_limited_toast');
         reject(new Error(errMsg));
       }
     };
-    xhr.onerror=function(){reject(new Error('网络错误，请检查连接'))};
-    xhr.ontimeout=function(){reject(new Error('请求超时，请检查网络'))};
+    xhr.onerror=function(){reject(new Error(t('network_error_check')))};
+    xhr.ontimeout=function(){reject(new Error(t('timeout_check')))};
     xhr.timeout=240000;
     showProgress('uploadProgress',true);
     showProgress('downloadProgress',true);
@@ -749,15 +892,15 @@ document.addEventListener('keydown',function(e){
 function loadModels(){
   fetch('/api/models').then(function(r){return r.json()}).then(function(d){
     var sel=$('modelSelect');sel.innerHTML='';
-    if(!d.models||d.models.length===0){sel.innerHTML='<option value="">无可用模型</option>';return}
+    if(!d.models||d.models.length===0){sel.innerHTML='<option value="">'+t('no_model')+'</option>';return}
     d.models.forEach(function(m){
       var opt=document.createElement('option');opt.value=m.name;
       opt.textContent=m.name+' ('+m.size_mb+'MB)';if(m.active)opt.selected=true;
       sel.appendChild(opt)
     });
     var cur=d.models.find(function(m){return m.active});
-    $('modelStatus').textContent=cur?'当前: '+cur.name:'未选择'
-  }).catch(function(){$('modelStatus').textContent='获取失败'})
+    $('modelStatus').textContent=cur?t('current_model',{name:cur.name}):t('no_selection')
+  }).catch(function(){$('modelStatus').textContent=t('fetch_failed')})
   // Also fetch warm status
   fetch('/api/models/warm-status',{
     headers:!authDisabled&&apiKey?{'Authorization':'Bearer '+apiKey}:{}
@@ -770,20 +913,20 @@ function loadModels(){
       var cls=m.is_main?'main':'secondary';
       html+='<span class="'+cls+'">'+(m.is_main?'★ ':'')+name+'</span>';
     }
-    $('warmStatus').innerHTML=count>0?html:'无预热模型';
+    $('warmStatus').innerHTML=count>0?html:t('no_warm_model');
   }).catch(function(){});
 }
 
 function switchModel(name){
-  if(!name)return;$('modelStatus').textContent='切换中...';
+  if(!name)return;$('modelStatus').textContent=t('switching');
   var headers={'Content-Type':'application/json'};
   if(!authDisabled&&apiKey)headers['Authorization']='Bearer '+apiKey;
   var fd=JSON.stringify({model:name});
   fetch('/api/select-model',{method:'POST',headers:headers,body:fd})
   .then(function(r){return r.json()}).then(function(d){
-    if(d.ok){$('modelStatus').textContent='已切换: '+name;toast('模型已切换: '+name,'success');loadModels()}
-    else{$('modelStatus').textContent='切换失败';toast('模型切换失败','error')}
-  }).catch(function(){$('modelStatus').textContent='切换失败';toast('网络错误','error')})
+    if(d.ok){$('modelStatus').textContent=t('current_model',{name:name});toast(t('model_switched_toast',{name:name}),'success');loadModels()}
+    else{$('modelStatus').textContent=t('model_switch_fail');toast(t('model_switch_fail'),'error')}
+  }).catch(function(){$('modelStatus').textContent=t('model_switch_fail');toast(t('network_error'),'error')})
 }
 
 // ============================================================

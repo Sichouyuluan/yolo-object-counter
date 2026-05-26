@@ -23,7 +23,23 @@ async def public_config():
         "max_upload_mb": get_config("max_upload_mb", 10),
         "auth_enabled": get_config("require_api_key", True),
         "version": "2.1.0",
+        "language": get_config("language", "zh"),
     }
+
+
+@router.put("/api/language")
+async def set_language(request: Request, _: str = Depends(verify_api_key)):
+    try:
+        body = await request.body()
+        data = json.loads(body) if body else {}
+    except Exception:
+        data = {}
+    lang = data.get("language", "")
+    if lang not in ("zh", "en"):
+        raise HTTPException(status_code=400, detail="language must be 'zh' or 'en'")
+    set_config("language", lang, persist=True)
+    logger.info(f"Language changed to: {lang}")
+    return {"ok": True, "language": lang}
 
 
 @router.get("/api/health")

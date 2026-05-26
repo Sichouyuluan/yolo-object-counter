@@ -37,6 +37,7 @@ DEFAULT_CONFIG = {
     "inference_timeout_seconds": 300,
     "enable_response_compression": True,
     "tunnel_url": "",
+    "language": "zh",
 }
 
 

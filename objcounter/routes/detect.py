@@ -13,6 +13,7 @@ from fastapi import APIRouter, UploadFile, File, HTTPException, Depends, Request
 
 from objcounter.config import get_config
 from objcounter.detector import draw_results
+from objcounter.i18n import t
 from objcounter.stats import detection_stats
 from objcounter.state import app_state
 from objcounter.middleware import verify_api_key
@@ -32,17 +33,17 @@ async def detect_image(
     request: Request = None,
 ):
     if not file.content_type or not file.content_type.startswith("image/"):
-        raise HTTPException(status_code=400, detail={"error": True, "message": "请上传图片文件", "code": 400})
+        raise HTTPException(status_code=400, detail={"error": True, "message": t("upload_no_image"), "code": 400})
 
     content = await file.read()
     max_bytes = get_config("max_upload_mb", 10) * 1024 * 1024
     if len(content) > max_bytes:
-        raise HTTPException(status_code=400, detail={"error": True, "message": f"文件过大，最大 {get_config('max_upload_mb')}MB", "code": 400})
+        raise HTTPException(status_code=400, detail={"error": True, "message": t("upload_too_large", max=get_config('max_upload_mb')), "code": 400})
 
     nparr = np.frombuffer(content, np.uint8)
     img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
     if img is None:
-        raise HTTPException(status_code=400, detail={"error": True, "message": "无法解析图片", "code": 400})
+        raise HTTPException(status_code=400, detail={"error": True, "message": t("upload_parse_failed"), "code": 400})
 
     detector = app_state.detector  # 线程安全读取
     try:
@@ -52,7 +53,7 @@ async def detect_image(
             elapsed = time.perf_counter() - t0
     except Exception:
         detection_stats.record_error()
-        raise HTTPException(status_code=503, detail={"error": True, "message": "服务器繁忙，请稍后重试", "code": 503})
+        raise HTTPException(status_code=503, detail={"error": True, "message": t("server_busy"), "code": 503})
 
     if request:
         detection_stats.record_success(client_ip=request.client.host)
@@ -85,12 +86,12 @@ async def save_image(
     _: str = Depends(verify_api_key),
 ):
     if not file.content_type or not file.content_type.startswith("image/"):
-        raise HTTPException(status_code=400, detail={"error": True, "message": "请上传图片文件", "code": 400})
+        raise HTTPException(status_code=400, detail={"error": True, "message": t("upload_no_image"), "code": 400})
     content = await file.read()
     nparr = np.frombuffer(content, np.uint8)
     img = cv2.imdecode(nparr, cv2.IMREAD_COLOR)
     if img is None:
-        raise HTTPException(status_code=400, detail={"error": True, "message": "无法解析图片", "code": 400})
+        raise HTTPException(status_code=400, detail={"error": True, "message": t("save_parse_failed"), "code": 400})
     vdir = get_config("valuable_dir", "Valuable photos")
     os.makedirs(vdir, exist_ok=True)
     timestamp = datetime.now().strftime("%Y%m%d_%H%M%S")

@@ -8,6 +8,7 @@ from fastapi import APIRouter, Depends, HTTPException
 from fastapi.responses import HTMLResponse
 
 from objcounter.config import get_config, set_config
+from objcounter.i18n import t
 from objcounter.state import app_state
 from objcounter.middleware import verify_api_key
 
@@ -80,4 +81,4 @@ async def valuable_open_dir(_: str = Depends(verify_api_key)):
             cmd = ["xdg-open", abs_dir]
         subprocess.Popen(cmd, creationflags=subprocess.CREATE_NO_WINDOW if sys.platform == "win32" else 0)
         return {"ok": True, "dir": abs_dir}
-    return {"ok": False, "error": "目录不存在"}
+    return {"ok": False, "error": t("dir_not_exist")}
