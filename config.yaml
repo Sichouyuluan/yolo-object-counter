@@ -2,6 +2,7 @@ enable_response_compression: true
 host: 0.0.0.0
 inference_timeout_seconds: 300
 input_size: 640
+language: zh
 max_upload_mb: 10
 model_path: models/yolo26m_v2.onnx
 nms_threshold: 0.5

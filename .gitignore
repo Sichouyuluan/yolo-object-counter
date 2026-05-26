@@ -50,6 +50,7 @@ Valuable photos/
 
 # Screenshots
 screenshot*.png
+docs/*.png
 
 # Temporary test directories
 atrouble/
@@ -61,6 +62,7 @@ all_skills.zip
 SECURITY_TEST_REPORT.md
 TEST_PLAN.md
 docs/MIMO项目描述.docx
+docs/~$*
 
 # Large model files
 models/*.onnx
