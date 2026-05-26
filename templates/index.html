@@ -342,15 +342,15 @@ function $(id){return document.getElementById(id)}
 var I18N={
 zh:{
   offline_warning:"⚠️ 服务器连接已断开，正在尝试重连...",page_title:"🔍 YOLO 目标检测计数 - Object Counter",title:"目标检测计数",
-  api_key_label:"\U0001f511 API Key",api_key_placeholder:"输入 API Key",btn_connect:"连接",
+  api_key_label:"🔑 API Key",api_key_placeholder:"输入 API Key",btn_connect:"连接",
   upload_click:"点击上传 或 拖拽图片到此处",upload_hint:"支持 JPG / PNG / BMP，最大 {max}MB",
   upload_paste:"也可",upload_paste_suffix:"粘贴图片",
-  btn_detect:"\U0001f680 开始检测",btn_detect_file:"\U0001f680 检测 {name}",
+  btn_detect:"🚀 开始检测",btn_detect_file:"🚀 检测 {name}",
   progress_upload:"⬆ 上传中",progress_download:"⬇ 下载中",loading:"处理中...",
-  stat_count:"\U0001f50d 目标数",stat_time:"⚡ 耗时 (ms)",stat_size:"\U0001f4d0 尺寸",
-  click_to_zoom:"点击查看大图",conf_distribution:"\U0001f4ca 置信度分布",
+  stat_count:"🔍 目标数",stat_time:"⚡ 耗时 (ms)",stat_size:"📐 尺寸",
+  click_to_zoom:"点击查看大图",conf_distribution:"📊 置信度分布",
   btn_save:"❌ 这次识别不准 — 保存原图",btn_saved:"✅ 已保存到优质照片",
-  btn_retry:"\U0001f504 重试检测",adv_settings:"▶ 高级设置",
+  btn_retry:"🔄 重试检测",adv_settings:"▶ 高级设置",
   conf_threshold:"置信度阈值 (Confidence)",iou_threshold:"IoU 阈值 (覆盖度)",
   model_file:"模型文件",model_loading:"加载中...",
   zoom_close:"关闭 (ESC)",zoom_out:"缩小",zoom_in:"放大",zoom_fit:"适应窗口",zoom_max:"最大缩放",
@@ -359,7 +359,7 @@ zh:{
   key_saved:"✅ Key 已保存",key_input_first:"请输入 API Key",key_saved_toast:"API Key 已保存",
   please_select_image:"请先选择图片",please_enter_key:"请先输入 API Key",
   server_offline:"服务器未连接，请稍后重试",
-  compressing:"\U0001f4e6 正在压缩图片...",uploading:"⬆ 正在上传...",
+  compressing:"📦 正在压缩图片...",uploading:"⬆ 正在上传...",
   detect_done:"✅ 检测完成",model_processing:"模型处理完成",
   detect_result:"检测完成: {count} 粒",
   retry_left:"检测失败，{count} 次重试机会",retry_exhausted:"检测失败，已达最大重试次数",
@@ -378,15 +378,15 @@ zh:{
 },
 en:{
   offline_warning:"⚠️ Server disconnected, reconnecting...",page_title:"🔍 YOLO Object Counter",title:"Object Counter",
-  api_key_label:"\U0001f511 API Key",api_key_placeholder:"Enter API Key",btn_connect:"Connect",
+  api_key_label:"🔑 API Key",api_key_placeholder:"Enter API Key",btn_connect:"Connect",
   upload_click:"Click to upload or drag image here",upload_hint:"Supports JPG / PNG / BMP, max {max}MB",
   upload_paste:"or",upload_paste_suffix:"to paste image",
-  btn_detect:"\U0001f680 Start Detection",btn_detect_file:"\U0001f680 Detect {name}",
+  btn_detect:"🚀 Start Detection",btn_detect_file:"🚀 Detect {name}",
   progress_upload:"⬆ Uploading",progress_download:"⬇ Downloading",loading:"Processing...",
-  stat_count:"\U0001f50d Objects",stat_time:"⚡ Time (ms)",stat_size:"\U0001f4d0 Size",
-  click_to_zoom:"Click to zoom",conf_distribution:"\U0001f4ca Confidence Distribution",
+  stat_count:"🔍 Objects",stat_time:"⚡ Time (ms)",stat_size:"📐 Size",
+  click_to_zoom:"Click to zoom",conf_distribution:"📊 Confidence Distribution",
   btn_save:"❌ Poor detection — Save original",btn_saved:"✅ Saved to valuable photos",
-  btn_retry:"\U0001f504 Retry Detection",adv_settings:"▶ Advanced Settings",
+  btn_retry:"🔄 Retry Detection",adv_settings:"▶ Advanced Settings",
   conf_threshold:"Confidence Threshold",iou_threshold:"IoU Threshold (Overlap)",
   model_file:"Model File",model_loading:"Loading...",
   zoom_close:"Close (ESC)",zoom_out:"Zoom Out",zoom_in:"Zoom In",zoom_fit:"Fit Window",zoom_max:"Max Zoom",
@@ -395,7 +395,7 @@ en:{
   key_saved:"✅ Key saved",key_input_first:"Please enter API Key",key_saved_toast:"API Key saved",
   please_select_image:"Please select an image first",please_enter_key:"Please enter API Key first",
   server_offline:"Server offline, please try again later",
-  compressing:"\U0001f4e6 Compressing image...",uploading:"⬆ Uploading...",
+  compressing:"📦 Compressing image...",uploading:"⬆ Uploading...",
   detect_done:"✅ Detection complete",model_processing:"Model processing done",
   detect_result:"Detected: {count} objects",
   retry_left:"Failed, {count} retries left",retry_exhausted:"Failed, max retries reached",
@@ -452,7 +452,7 @@ function toggleLang(){
 
 function updateDynamicTexts(){
   var db=$('detectBtn');
-  if(db.textContent.indexOf('\U0001f680')>=0||db.textContent.indexOf('🚀')>=0){
+  if(db.textContent.indexOf('🚀')>=0){
     if(selectedFile){db.textContent=t('btn_detect_file',{name:selectedFile.name})}
     else{db.textContent=t('btn_detect')}
   }
